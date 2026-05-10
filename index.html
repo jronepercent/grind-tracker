@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Grind Tracker — Sales Dashboard</title>
+  <title>Grind Tracker - Sales Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -55,7 +55,8 @@
       background: var(--bg); background-image: var(--bg-grad);
       background-attachment: fixed; color: var(--text);
       min-height: 100vh; font-size: 15px; line-height: 1.5;
-      transition: background-color 0.3s, color 0.3s; padding-bottom: 100px;
+      transition: background-color 0.3s, color 0.3s;
+      padding-bottom: calc(136px + env(safe-area-inset-bottom));
     }
     body::before {
       content: ''; position: fixed; inset: 0;
@@ -91,6 +92,23 @@
       font-size: 13px; color: var(--text-dim); margin-bottom: 32px;
     }
     .login-form { display: flex; flex-direction: column; gap: 12px; }
+    .login-error {
+      padding: 12px 14px; background: rgba(212,87,76,0.12);
+      border: 1px solid var(--danger); border-radius: 10px;
+      color: var(--danger); font-size: 13px; text-align: left;
+    }
+    .login-tabs {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 13px; padding: 4px; margin-bottom: 18px;
+    }
+    .login-tab {
+      border: 0; border-radius: 10px; padding: 10px;
+      background: transparent; color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+    }
+    .login-tab.active { background: var(--accent); color: var(--bg); font-weight: 700; }
     .login-success {
       padding: 16px; background: var(--accent-soft); border-radius: 12px;
       color: var(--accent); font-size: 14px; text-align: center;
@@ -120,7 +138,7 @@
       font-family: 'JetBrains Mono', monospace; font-size: 11px;
       color: var(--text-dim); margin-top: 4px; letter-spacing: 0.05em;
     }
-    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
     .icon-btn {
       width: 42px; height: 42px; border-radius: 12px;
       border: 1px solid var(--border); background: var(--surface);
@@ -146,16 +164,21 @@
 
     /* ============ STATS HERO ============ */
     .hero-stats {
-      background: linear-gradient(135deg, var(--surface) 0%, var(--surface) 55%, var(--surface-2) 100%);
-      border: 1px solid var(--border);
-      border-radius: 18px; padding: 24px 20px; margin-bottom: 16px;
-      position: relative; overflow: hidden; box-shadow: 0 14px 36px rgba(0,0,0,0.14);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 96%, var(--accent) 4%) 0%, var(--surface) 58%, var(--surface-2) 100%);
+      border: 1px solid color-mix(in srgb, var(--border) 70%, var(--accent) 30%);
+      border-radius: 18px; padding: 28px 24px; margin-bottom: 16px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 18px 44px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.04);
     }
     .hero-stats::before {
       content: ''; position: absolute; top: -50%; right: -20%;
       width: 60%; height: 200%;
-      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+      background: radial-gradient(circle, color-mix(in srgb, var(--accent-soft) 70%, transparent) 0%, transparent 70%);
       pointer-events: none;
+    }
+    .hero-stats::after {
+      content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), transparent);
     }
     .hero-label {
       font-family: 'JetBrains Mono', monospace; font-size: 11px;
@@ -168,7 +191,11 @@
       display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
     }
     .hero-revenue .currency { font-size: 32px; color: var(--accent); font-weight: 400; }
-    .hero-revenue .digits { font-feature-settings: 'tnum'; }
+    .hero-revenue .digits {
+      font-feature-settings: 'tnum';
+      color: color-mix(in srgb, var(--accent) 82%, var(--text) 18%);
+      text-shadow: 0 8px 28px var(--accent-soft);
+    }
     .hero-divider { height: 1px; background: var(--border); margin: 20px 0 16px; }
     .hero-progress {
       height: 10px; background: var(--surface-2); border: 1px solid var(--border);
@@ -178,6 +205,18 @@
       height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent-2));
       border-radius: inherit; transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
     }
+    .view-toggle {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 5px;
+      margin-bottom: 12px; padding: 4px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 14px;
+    }
+    .view-btn {
+      border: 0; border-radius: 10px; padding: 10px 8px;
+      background: transparent; color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer;
+    }
+    .view-btn.active { background: var(--accent); color: var(--bg); font-weight: 700; }
     .hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .hero-grid-item { display: flex; flex-direction: column; gap: 4px; }
     .hero-grid-label {
@@ -346,12 +385,12 @@
 
     /* ============ FAB ============ */
     .fab {
-      position: fixed; bottom: 24px; right: 24px;
+      position: fixed; bottom: calc(92px + env(safe-area-inset-bottom)); right: 24px;
       width: 60px; height: 60px; border-radius: 50%;
       background: var(--accent); color: var(--bg); border: none;
       font-size: 32px; font-weight: 300; line-height: 1; cursor: pointer;
       box-shadow: 0 8px 24px var(--accent-soft), 0 4px 12px rgba(0, 0, 0, 0.2);
-      z-index: 50; transition: all 0.2s;
+      z-index: 70; transition: all 0.2s;
       display: flex; align-items: center; justify-content: center;
     }
     .fab:active { transform: scale(0.92); }
@@ -554,9 +593,16 @@
       font-size: 11px; color: var(--accent); letter-spacing: 0.1em;
       text-transform: uppercase;
     }
+    .quote-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px; margin-bottom: 20px;
+      display: grid; gap: 8px;
+    }
+    .quote-card .quote-text { font-size: 15px; line-height: 1.55; }
+    .quote-card .quote-author { margin-top: 0; }
 
     .bottom-nav {
-      position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
+      position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%);
       z-index: 60; width: min(560px, calc(100% - 24px));
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
       background: color-mix(in srgb, var(--surface) 88%, transparent); backdrop-filter: blur(12px);
@@ -601,6 +647,13 @@
       .hero-revenue { font-size: 52px; }
       .action-btn { min-width: 42px; width: 42px; padding: 0; }
       .action-btn .txt { display: none; }
+      .fab { right: 18px; bottom: calc(92px + env(safe-area-inset-bottom)); width: 56px; height: 56px; }
+      .bottom-nav { width: calc(100% - 18px); }
+    }
+    @media (min-width: 700px) and (max-width: 1100px) {
+      .app { max-width: 760px; }
+      .fab { right: calc((100vw - min(760px, 100vw)) / 2 + 24px); }
+      .bottom-nav { width: min(720px, calc(100% - 32px)); }
     }
 
     /* ============ USER INFO ============ */
@@ -685,23 +738,44 @@
       <div class="login-title">GRIND TRACKER</div>
       <div class="login-sub">ติดตามยอดขายต่อเดือน · ตั้งเป้า · ทำให้ถึง</div>
 
+      <div class="login-tabs">
+        <button class="login-tab active" id="loginTabBtn">Login</button>
+        <button class="login-tab" id="signupTabBtn">Sign up</button>
+      </div>
+
       <div id="loginFormView">
         <div class="login-form">
           <input type="email" class="form-input" id="loginEmail" placeholder="email@example.com" autocomplete="email">
-          <button class="btn btn-primary" id="loginBtn">ส่ง Magic Link</button>
+          <input type="password" class="form-input" id="loginPassword" placeholder="รหัสผ่าน" autocomplete="current-password">
+          <div class="login-error hidden" id="loginError"></div>
+          <button class="btn btn-primary" id="loginBtn">เข้าสู่ระบบ</button>
         </div>
         <div class="login-footer">
-          ระบบจะส่งลิงก์ login ไปทางอีเมล<br>คลิกในอีเมลเพื่อเข้าใช้งาน
+          <a href="#" id="forgotLink" style="color: var(--accent)">ลืมรหัสผ่าน?</a>
         </div>
       </div>
 
-      <div id="loginSentView" class="hidden">
-        <div class="login-success">
-          ✓ ส่งลิงก์ไปที่อีเมลแล้ว<br>
-          <small style="opacity: 0.8">เช็ค inbox / spam แล้วคลิกลิงก์</small>
+      <div id="signupFormView" class="hidden">
+        <div class="login-form">
+          <input type="email" class="form-input" id="signupEmail" placeholder="email@example.com" autocomplete="email">
+          <input type="password" class="form-input" id="signupPassword" placeholder="รหัสผ่านอย่างน้อย 6 ตัว" autocomplete="new-password">
+          <input type="password" class="form-input" id="signupConfirm" placeholder="ยืนยันรหัสผ่าน" autocomplete="new-password">
+          <div class="login-error hidden" id="signupError"></div>
+          <button class="btn btn-primary" id="signupBtn">สมัครสมาชิก</button>
         </div>
         <div class="login-footer">
-          ไม่ได้รับอีเมล? <a href="#" id="resendLink" style="color: var(--accent)">ส่งใหม่</a>
+          ระบบอาจให้ยืนยัน email ตามค่าของ Supabase Auth
+        </div>
+      </div>
+
+      <div id="forgotFormView" class="hidden">
+        <div class="login-form">
+          <input type="email" class="form-input" id="forgotEmail" placeholder="email@example.com">
+          <div class="login-error hidden" id="forgotError"></div>
+          <button class="btn btn-primary" id="forgotBtn">ส่งลิงก์รีเซ็ตรหัสผ่าน</button>
+        </div>
+        <div class="login-footer">
+          <a href="#" id="backToLogin" style="color: var(--accent)">กลับหน้า Login</a>
         </div>
       </div>
     </div>
@@ -716,15 +790,20 @@
         <div class="month-label" id="monthLabel">—</div>
       </div>
       <div class="header-actions">
-        <button class="action-btn" id="shareBtn" title="Share"><span class="mark">↗</span><span class="txt">Share</span></button>
-        <button class="action-btn" id="quoteBtn" title="Quote"><span class="mark">“</span><span class="txt">Quote</span></button>
-        <button class="action-btn" id="historyBtn" title="History"><span class="mark">≡</span><span class="txt">Log</span></button>
-        <button class="icon-btn" id="settingsBtn">⚙</button>
+        <button class="action-btn" id="shareBtn" title="Share"><span class="mark">SH</span><span class="txt">Share</span></button>
+        <button class="action-btn" id="quoteBtn" title="Quote"><span class="mark">QT</span><span class="txt">Quote</span></button>
+        <button class="action-btn" id="historyBtn" title="History"><span class="mark">LG</span><span class="txt">Log</span></button>
+        <button class="action-btn" id="settingsBtn" title="Settings"><span class="mark">ST</span><span class="txt">Set</span></button>
       </div>
     </header>
 
+    <div class="view-toggle">
+      <button class="view-btn active" data-view="month">Month</button>
+      <button class="view-btn" data-view="year">Year</button>
+    </div>
+
     <section class="hero-stats">
-      <div class="hero-label">Total Revenue This Month</div>
+      <div class="hero-label" id="heroLabel">Total Revenue This Month</div>
       <div class="hero-revenue">
         <span class="currency">฿</span>
         <span class="digits" id="totalRevenue">0</span>
@@ -775,9 +854,15 @@
     </div>
 
     <div class="chart-panel">
-      <div class="section-title">// Last 14 Days</div>
+      <div class="section-title" id="chartTitle">// Last 14 Days</div>
       <div class="chart-bars" id="dailyChart"></div>
-      <div class="chart-axis"><span>14 days ago</span><span>today</span></div>
+      <div class="chart-axis"><span id="chartStartLabel">14 days ago</span><span id="chartEndLabel">today</span></div>
+    </div>
+
+    <div class="quote-card" id="quoteCard">
+      <div class="section-title">// Daily Quote</div>
+      <div class="quote-text" id="quoteCardText">Revenue does not lie. Put in the work.</div>
+      <div class="quote-author" id="quoteCardAuthor">Anon</div>
     </div>
 
     <div class="section-header">
@@ -796,10 +881,10 @@
     <button class="fab" id="addBtn">+</button>
 
     <div class="bottom-nav">
-      <button class="nav-btn active" data-nav="dashboard"><span>⌂</span>Dashboard</button>
-      <button class="nav-btn" data-nav="history"><span>≡</span>History</button>
-      <button class="nav-btn" data-nav="products"><span>＋</span>Products</button>
-      <button class="nav-btn" data-nav="settings"><span>⚙</span>Settings</button>
+      <button class="nav-btn active" data-nav="dashboard"><span>DB</span>Dashboard</button>
+      <button class="nav-btn" data-nav="history"><span>LG</span>History</button>
+      <button class="nav-btn" data-nav="products"><span>PR</span>Products</button>
+      <button class="nav-btn" data-nav="settings"><span>ST</span>Settings</button>
     </div>
   </div>
 
@@ -911,11 +996,11 @@
         <label class="form-label">เครื่องมือ</label>
         <div class="menu-options">
           <button class="menu-option" id="resetMonthBtn">
-            <span class="menu-icon">↻</span>
+            <span class="menu-icon">RS</span>
             <span>รีเซ็ตเดือนใหม่ (เริ่มยอดขายจาก 0)</span>
           </button>
           <button class="menu-option danger" id="logoutBtn">
-            <span class="menu-icon">⇲</span>
+            <span class="menu-icon">LO</span>
             <span>ออกจากระบบ</span>
           </button>
         </div>
@@ -934,7 +1019,7 @@
       <div class="modal-subtitle">// Actions</div>
       <div class="menu-options">
         <button class="menu-option" id="menuEdit">
-          <span class="menu-icon">✎</span>
+          <span class="menu-icon">ED</span>
           <span>แก้ไขรายละเอียด</span>
         </button>
         <button class="menu-option" id="menuAddBulk">
@@ -942,7 +1027,7 @@
           <span>เพิ่มยอดขายหลายชิ้น</span>
         </button>
         <button class="menu-option danger" id="menuDelete">
-          <span class="menu-icon">⨯</span>
+          <span class="menu-icon">DL</span>
           <span>ลบสินค้านี้</span>
         </button>
       </div>
@@ -1083,7 +1168,7 @@
 
   <script>
     // ============================================
-    // ⚙️ CONFIG — แก้ 2 บรรทัดนี้หลังสร้าง Supabase project
+    // CONFIG - แก้ 2 บรรทัดนี้หลังสร้าง Supabase project
     // ============================================
     const SUPABASE_URL = 'https://ojblscuqatthmkhtgfgc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qYmxzY3VxYXR0aG1raHRnZmdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTc1MTcsImV4cCI6MjA5MzkzMzUxN30.yI1l7JEwnNxjkIkDf-1HmzKy-Ag1ZEV3QCkoKuubOF0';
@@ -1099,6 +1184,7 @@
       quote: null,
       theme: 'obsidian',
       month: getCurrentMonth(),
+      viewMode: 'month',
       monthlyRevenueGoal: 0
     };
     let editingProductId = null;
@@ -1129,6 +1215,22 @@
       const d = new Date(dateLike);
       const now = new Date();
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }
+
+    function isInCurrentYear(dateLike) {
+      return new Date(dateLike).getFullYear() === new Date().getFullYear();
+    }
+
+    function isInActivePeriod(dateLike) {
+      return state.viewMode === 'year' ? isInCurrentYear(dateLike) : isInCurrentMonth(dateLike);
+    }
+
+    function getPeriodLabelText() {
+      return state.viewMode === 'year' ? 'This Year' : 'This Month';
+    }
+
+    function getPeriodGoalMultiplier() {
+      return state.viewMode === 'year' ? 12 : 1;
     }
 
     function isSameDay(a, b) {
@@ -1222,32 +1324,96 @@
     // ============================================
     // AUTH
     // ============================================
-    async function sendMagicLink() {
+    function showAuthView(view) {
+      document.getElementById('loginFormView').classList.toggle('hidden', view !== 'login');
+      document.getElementById('signupFormView').classList.toggle('hidden', view !== 'signup');
+      document.getElementById('forgotFormView').classList.toggle('hidden', view !== 'forgot');
+      document.getElementById('loginTabBtn').classList.toggle('active', view === 'login' || view === 'forgot');
+      document.getElementById('signupTabBtn').classList.toggle('active', view === 'signup');
+    }
+
+    async function signIn() {
       const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const err = document.getElementById('loginError');
+      err.classList.add('hidden');
       if (!email || !email.includes('@')) {
-        alert('กรอกอีเมลให้ถูกต้อง');
+        err.textContent = 'กรอกอีเมลให้ถูกต้อง';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (!password) {
+        err.textContent = 'กรอกรหัสผ่าน';
+        err.classList.remove('hidden');
         return;
       }
 
       const btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.textContent = 'กำลังส่ง...';
-
-      const { error } = await sb.auth.signInWithOtp({
-        email,
-        options: { emailRedirectTo: window.location.href.split('#')[0].split('?')[0] }
-      });
-
-      btn.disabled = false;
-      btn.textContent = 'ส่ง Magic Link';
-
+      btn.disabled = true; btn.textContent = 'กำลังเข้าสู่ระบบ...';
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
       if (error) {
-        alert('ผิดพลาด: ' + error.message);
+        err.textContent = error.message.includes('Invalid') ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' : error.message;
+        err.classList.remove('hidden');
         return;
       }
+    }
 
-      document.getElementById('loginFormView').classList.add('hidden');
-      document.getElementById('loginSentView').classList.remove('hidden');
+    async function signUp() {
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('signupConfirm').value;
+      const err = document.getElementById('signupError');
+      err.classList.add('hidden');
+      if (!email || !email.includes('@')) {
+        err.textContent = 'กรอกอีเมลให้ถูกต้อง';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (password.length < 6) {
+        err.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัว';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (password !== confirm) {
+        err.textContent = 'รหัสผ่านไม่ตรงกัน';
+        err.classList.remove('hidden');
+        return;
+      }
+      const btn = document.getElementById('signupBtn');
+      btn.disabled = true; btn.textContent = 'กำลังสมัคร...';
+      const { error } = await sb.auth.signUp({ email, password });
+      btn.disabled = false; btn.textContent = 'สมัครสมาชิก';
+      if (error) {
+        err.textContent = error.message;
+        err.classList.remove('hidden');
+        return;
+      }
+      showAuthView('login');
+      document.getElementById('loginEmail').value = email;
+      alert('สมัครสำเร็จ ถ้า Supabase เปิด email confirmation ให้เช็คอีเมลก่อนเข้าสู่ระบบ');
+    }
+
+    async function sendResetEmail() {
+      const email = document.getElementById('forgotEmail').value.trim();
+      const err = document.getElementById('forgotError');
+      err.classList.add('hidden');
+      if (!email || !email.includes('@')) {
+        err.textContent = 'กรอกอีเมลให้ถูกต้อง';
+        err.classList.remove('hidden');
+        return;
+      }
+      const btn = document.getElementById('forgotBtn');
+      btn.disabled = true; btn.textContent = 'กำลังส่ง...';
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href.split('#')[0].split('?')[0] });
+      btn.disabled = false; btn.textContent = 'ส่งลิงก์รีเซ็ตรหัสผ่าน';
+      if (error) {
+        err.textContent = error.message;
+        err.classList.remove('hidden');
+        return;
+      }
+      showAuthView('login');
+      alert('ส่งลิงก์รีเซ็ตรหัสผ่านแล้ว');
     }
 
     async function logout() {
@@ -1357,13 +1523,13 @@
 
     function getRevenueFromLogs(productId = null) {
       return state.saleLogs
-        .filter(l => isInCurrentMonth(l.logged_at) && (l.status || 'paid') !== 'refunded' && (!productId || l.product_id === productId))
+        .filter(l => isInActivePeriod(l.logged_at) && (l.status || 'paid') !== 'refunded' && (!productId || l.product_id === productId))
         .reduce((sum, l) => sum + Number(l.revenue || 0), 0);
     }
 
     function getSalesCountFromLogs(productId = null) {
       return state.saleLogs
-        .filter(l => isInCurrentMonth(l.logged_at) && (l.status || 'paid') !== 'refunded' && (!productId || l.product_id === productId))
+        .filter(l => isInActivePeriod(l.logged_at) && (l.status || 'paid') !== 'refunded' && (!productId || l.product_id === productId))
         .reduce((sum, l) => sum + Number(l.quantity || 0), 0);
     }
 
@@ -1439,7 +1605,8 @@
       const fallback = { quote_text: 'Revenue does not lie. Put in the work.', author: 'Anon' };
       const { count } = await sb.from('daily_quotes').select('*', { count: 'exact', head: true }).eq('is_active', true);
       if (!count) { state.quote = fallback; renderQuote(); return; }
-      const offset = Math.floor(Math.random() * count);
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const offset = [...todayKey].reduce((sum, ch) => sum + ch.charCodeAt(0), 0) % count;
       const { data } = await sb.from('daily_quotes').select('*').eq('is_active', true).range(offset, offset);
       state.quote = data?.[0] || fallback;
       renderQuote();
@@ -1447,6 +1614,12 @@
 
     function computeProjectedRevenue() {
       const now = new Date();
+      if (state.viewMode === 'year') {
+        const start = new Date(now.getFullYear(), 0, 1);
+        const dayOfYear = Math.max(1, Math.floor((now - start) / 86400000) + 1);
+        const daysInYear = new Date(now.getFullYear(), 1, 29).getMonth() === 1 ? 366 : 365;
+        return Math.round((getRevenueFromLogs() / dayOfYear) * daysInYear);
+      }
       const day = now.getDate();
       const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
       return day > 0 ? Math.round((getRevenueFromLogs() / day) * daysInMonth) : 0;
@@ -1482,6 +1655,29 @@
     function renderDailyChart() {
       const el = document.getElementById('dailyChart');
       if (!el) return;
+      if (state.viewMode === 'year') {
+        const now = new Date();
+        const months = Array.from({ length: 12 }, (_, month) => {
+          const revenue = state.saleLogs
+            .filter(l => (l.status || 'paid') !== 'refunded')
+            .filter(l => {
+              const d = new Date(l.logged_at);
+              return d.getFullYear() === now.getFullYear() && d.getMonth() === month;
+            })
+            .reduce((sum, l) => sum + Number(l.revenue || 0), 0);
+          return { month, revenue };
+        });
+        const max = Math.max(1, ...months.map(m => m.revenue));
+        el.style.gridTemplateColumns = 'repeat(12, 1fr)';
+        el.innerHTML = months.map(m => {
+          const h = Math.max(3, Math.round((m.revenue / max) * 100));
+          return `<div class="chart-bar" title="${m.month + 1} · ฿${formatNumber(m.revenue)}" style="height:${h}%"></div>`;
+        }).join('');
+        document.getElementById('chartTitle').textContent = '// Monthly Revenue';
+        document.getElementById('chartStartLabel').textContent = 'JAN';
+        document.getElementById('chartEndLabel').textContent = 'DEC';
+        return;
+      }
       const days = [];
       const today = new Date();
       for (let i = 13; i >= 0; i--) {
@@ -1490,10 +1686,14 @@
         days.push({ date: d, revenue: getRevenueForDate(d) });
       }
       const max = Math.max(1, ...days.map(d => d.revenue));
+      el.style.gridTemplateColumns = 'repeat(14, 1fr)';
       el.innerHTML = days.map(d => {
         const h = Math.max(3, Math.round((d.revenue / max) * 100));
         return `<div class="chart-bar" title="${formatDateTime(d.date)} · ฿${formatNumber(d.revenue)}" style="height:${h}%"></div>`;
       }).join('');
+      document.getElementById('chartTitle').textContent = '// Last 14 Days';
+      document.getElementById('chartStartLabel').textContent = '14 days ago';
+      document.getElementById('chartEndLabel').textContent = 'today';
     }
 
     function renderInsights() {
@@ -1503,17 +1703,22 @@
         .filter(l => (l.status || 'paid') !== 'refunded' && isSameDay(new Date(l.logged_at), today))
         .reduce((sum, l) => sum + Number(l.quantity || 0), 0);
       const projected = computeProjectedRevenue();
-      const goal = state.monthlyRevenueGoal;
+      const goal = state.monthlyRevenueGoal * getPeriodGoalMultiplier();
       const best = getBestProduct();
       const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
-      const daysLeft = Math.max(1, daysInMonth - today.getDate() + 1);
+      const yearStart = new Date(today.getFullYear(), 0, 1);
+      const dayOfYear = Math.floor((today - yearStart) / 86400000) + 1;
+      const daysInYear = new Date(today.getFullYear(), 1, 29).getMonth() === 1 ? 366 : 365;
+      const daysLeft = state.viewMode === 'year'
+        ? Math.max(1, daysInYear - dayOfYear + 1)
+        : Math.max(1, daysInMonth - today.getDate() + 1);
       const needPerDay = goal > 0 ? Math.ceil(Math.max(0, goal - getRevenueFromLogs()) / daysLeft) : 0;
       document.getElementById('todayRevenue').textContent = '฿' + formatNumber(todayRevenue);
       document.getElementById('todaySales').textContent = `${todaySales} sale${todaySales !== 1 ? 's' : ''} today`;
       document.getElementById('projectedRevenue').textContent = '฿' + formatNumber(projected);
       document.getElementById('goalPace').textContent = goal > 0
         ? `${projected >= goal ? 'On pace' : 'Need ฿' + formatNumber(needPerDay) + '/day'} for ฿${formatNumber(goal)} goal`
-        : 'Set monthly goal in Settings';
+        : 'Set goal in Settings';
       document.getElementById('bestProduct').textContent = best ? best.name.slice(0, 18) : '—';
       document.getElementById('bestProductHint').textContent = best ? `฿${formatNumber(best.revenue)} · ${best.sales} sales` : 'No data yet';
       document.getElementById('salesStreak').textContent = computeStreak();
@@ -1556,11 +1761,13 @@
 
     function render() {
       document.documentElement.setAttribute('data-theme', state.theme);
-      document.getElementById('monthLabel').textContent = state.month;
+      document.getElementById('monthLabel').textContent = state.viewMode === 'year' ? String(new Date().getFullYear()) : state.month;
+      document.getElementById('heroLabel').textContent = `Total Revenue ${getPeriodLabelText()}`;
+      document.querySelectorAll('.view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === state.viewMode));
 
       const totalRevenue = getRevenueFromLogs();
-      const totalSales = state.products.reduce((s, p) => s + p.sold, 0);
-      const totalGoal = state.products.reduce((s, p) => s + p.goal, 0);
+      const totalSales = getSalesCountFromLogs();
+      const totalGoal = state.products.reduce((s, p) => s + p.goal, 0) * getPeriodGoalMultiplier();
       const progress = totalGoal > 0 ? Math.round((totalSales / totalGoal) * 100) : 0;
 
       document.getElementById('totalRevenue').textContent = formatNumber(totalRevenue);
@@ -1592,9 +1799,11 @@
     }
 
     function renderProductCard(p) {
-      const pct = Math.min(100, Math.round((p.sold / p.goal) * 100));
-      const overPct = p.sold > p.goal ? Math.round(((p.sold - p.goal) / p.goal) * 100) : 0;
-      const isComplete = p.sold >= p.goal;
+      const periodSold = getSalesCountFromLogs(p.id);
+      const periodGoal = p.goal * getPeriodGoalMultiplier();
+      const pct = Math.min(100, Math.round((periodSold / periodGoal) * 100));
+      const overPct = periodSold > periodGoal ? Math.round(((periodSold - periodGoal) / periodGoal) * 100) : 0;
+      const isComplete = periodSold >= periodGoal;
       const revenue = getRevenueFromLogs(p.id);
       const imgHtml = p.image
         ? `<div class="product-image"><img src="${p.image}" alt=""></div>`
@@ -1615,12 +1824,12 @@
               <div class="progress-bar ${overPct > 0 ? 'over' : ''}" style="width: ${pct}%"></div>
             </div>
             <div class="progress-meta">
-              <span><span class="count">${p.sold}</span> / ${p.goal} ขาย ${overPct > 0 ? `<span style="color:var(--success)">+${overPct}%</span>` : ''}</span>
+              <span><span class="count">${periodSold}</span> / ${periodGoal} ขาย ${overPct > 0 ? `<span style="color:var(--success)">+${overPct}%</span>` : ''}</span>
               <span class="revenue">฿${formatNumber(revenue)}</span>
             </div>
           </div>
           <div class="product-actions">
-            <button class="btn-minus" data-action="minus" data-id="${p.id}" ${p.sold === 0 ? 'disabled' : ''}>−</button>
+            <button class="btn-minus" data-action="minus" data-id="${p.id}" ${p.sold === 0 ? 'disabled' : ''}>-</button>
             <button class="btn-plus" data-action="plus" data-id="${p.id}">+ 1 SALE</button>
           </div>
         </div>
@@ -1649,7 +1858,7 @@
       const search = (document.getElementById('historySearch')?.value || '').trim().toLowerCase();
       const statusFilter = document.getElementById('historyStatusFilter')?.value || 'all';
       const logs = [...state.saleLogs]
-        .filter(l => isInCurrentMonth(l.logged_at))
+        .filter(l => isInActivePeriod(l.logged_at))
         .filter(l => statusFilter === 'all' || (l.status || 'paid') === statusFilter)
         .filter(l => !search || `${l.product_name || ''} ${l.note || ''}`.toLowerCase().includes(search))
         .sort((a, b) => new Date(b.logged_at) - new Date(a.logged_at));
@@ -1701,17 +1910,21 @@
       if (!text || !author || !q) return;
       text.textContent = `"${q.quote_text}"`;
       author.textContent = q.author || 'Anon';
+      const cardText = document.getElementById('quoteCardText');
+      const cardAuthor = document.getElementById('quoteCardAuthor');
+      if (cardText) cardText.textContent = `"${q.quote_text}"`;
+      if (cardAuthor) cardAuthor.textContent = q.author || 'Anon';
     }
 
     function renderShareCard() {
       const revenue = getRevenueFromLogs();
       const sales = getSalesCountFromLogs();
-      const goal = state.monthlyRevenueGoal;
+      const goal = state.monthlyRevenueGoal * getPeriodGoalMultiplier();
       const pct = goal > 0 ? Math.round((revenue / goal) * 100) : 0;
       const revEl = document.getElementById('shareRevenue');
       if (!revEl) return;
       revEl.textContent = '฿' + formatNumber(revenue);
-      document.getElementById('shareSummary').textContent = `${sales} sales · ${state.month}`;
+      document.getElementById('shareSummary').textContent = `${sales} sales · ${state.viewMode === 'year' ? new Date().getFullYear() : state.month}`;
       document.getElementById('shareGoal').textContent = goal > 0
         ? `${pct}% of ฿${formatNumber(goal)} monthly goal`
         : 'No monthly goal set';
@@ -1915,7 +2128,7 @@
     function exportHistoryCsv() {
       const rows = [['date','product','quantity','unit_price','revenue','status','note']];
       [...state.saleLogs]
-        .filter(l => isInCurrentMonth(l.logged_at))
+        .filter(l => isInActivePeriod(l.logged_at))
         .sort((a, b) => new Date(a.logged_at) - new Date(b.logged_at))
         .forEach(l => rows.push([
           new Date(l.logged_at).toISOString(),
@@ -1960,6 +2173,12 @@
       else if (target === 'settings') document.getElementById('settingsModal').classList.remove('hidden');
       else if (target === 'products') document.getElementById('productsList').scrollIntoView({ behavior: 'smooth' });
       else window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchViewMode(mode) {
+      state.viewMode = mode === 'year' ? 'year' : 'month';
+      render();
+      if (!document.getElementById('historyModal').classList.contains('hidden')) renderHistory();
     }
 
     async function setTheme(t) {
@@ -2009,15 +2228,29 @@
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
       // Login
-      document.getElementById('loginBtn').onclick = sendMagicLink;
-      document.getElementById('loginEmail').addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendMagicLink();
-      });
-      document.getElementById('resendLink').onclick = (e) => {
+      document.getElementById('loginTabBtn').onclick = () => showAuthView('login');
+      document.getElementById('signupTabBtn').onclick = () => showAuthView('signup');
+      document.getElementById('forgotLink').onclick = e => {
         e.preventDefault();
-        document.getElementById('loginFormView').classList.remove('hidden');
-        document.getElementById('loginSentView').classList.add('hidden');
+        document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value;
+        showAuthView('forgot');
       };
+      document.getElementById('backToLogin').onclick = e => {
+        e.preventDefault();
+        showAuthView('login');
+      };
+      document.getElementById('loginBtn').onclick = signIn;
+      document.getElementById('signupBtn').onclick = signUp;
+      document.getElementById('forgotBtn').onclick = sendResetEmail;
+      document.getElementById('loginEmail').addEventListener('keypress', e => {
+        if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+      });
+      document.getElementById('loginPassword').addEventListener('keypress', e => {
+        if (e.key === 'Enter') signIn();
+      });
+      document.getElementById('signupConfirm').addEventListener('keypress', e => {
+        if (e.key === 'Enter') signUp();
+      });
 
       // App
       document.getElementById('addBtn').onclick = () => openProductModal();
@@ -2029,6 +2262,7 @@
         document.getElementById('settingsModal').classList.remove('hidden');
       };
       document.querySelectorAll('.nav-btn').forEach(b => b.onclick = () => handleBottomNav(b.dataset.nav));
+      document.querySelectorAll('.view-btn').forEach(b => b.onclick = () => switchViewMode(b.dataset.view));
 
       document.getElementById('productCancel').onclick = closeAllModals;
       document.getElementById('productSave').onclick = saveProduct;
