@@ -91,16 +91,38 @@
       font-size: 13px; color: var(--text-dim); margin-bottom: 32px;
     }
     .login-form { display: flex; flex-direction: column; gap: 12px; }
+    .login-error {
+      padding: 12px 14px; background: rgba(212, 87, 76, 0.12);
+      border: 1px solid var(--danger); border-radius: 10px;
+      color: var(--danger); font-size: 13px; text-align: left;
+    }
     .login-success {
       padding: 16px; background: var(--accent-soft); border-radius: 12px;
       color: var(--accent); font-size: 14px; text-align: center;
       border: 1px solid var(--accent);
     }
     .login-footer {
-      margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
-      font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      color: var(--text-faint); letter-spacing: 0.1em;
+      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-faint); letter-spacing: 0.05em;
     }
+    .login-footer a { color: var(--accent); text-decoration: none; }
+    .login-footer a:hover { text-decoration: underline; }
+    .login-divider {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text-faint); font-size: 11px;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
+    }
+    .login-divider::before, .login-divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .pw-wrap { position: relative; }
+    .pw-toggle {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--text-dim);
+      cursor: pointer; font-size: 16px; padding: 4px; line-height: 1;
+    }
+    .pw-toggle:hover { color: var(--text); }
 
     /* ============ HEADER ============ */
     header {
@@ -492,25 +514,96 @@
       <div class="login-title">GRIND TRACKER</div>
       <div class="login-sub">ติดตามยอดขายต่อเดือน · ตั้งเป้า · ทำให้ถึง</div>
 
+      <!-- ── Sign In View ── -->
       <div id="loginFormView">
         <div class="login-form">
-          <input type="email" class="form-input" id="loginEmail" placeholder="email@example.com" autocomplete="email">
-          <button class="btn btn-primary" id="loginBtn">ส่ง Magic Link</button>
+          <input type="email" class="form-input" id="loginEmail"
+            placeholder="email@example.com" autocomplete="email">
+
+          <div class="pw-wrap">
+            <input type="password" class="form-input" id="loginPassword"
+              placeholder="รหัสผ่าน" autocomplete="current-password" style="padding-right:44px">
+            <button class="pw-toggle" id="toggleLoginPw" tabindex="-1">👁</button>
+          </div>
+
+          <div class="login-error hidden" id="loginError"></div>
+
+          <button class="btn btn-primary" id="loginBtn">เข้าสู่ระบบ</button>
         </div>
+
         <div class="login-footer">
-          ระบบจะส่งลิงก์ login ไปทางอีเมล<br>คลิกในอีเมลเพื่อเข้าใช้งาน
+          <a href="#" id="forgotLink">ลืมรหัสผ่าน?</a>
+          &nbsp;·&nbsp;
+          ยังไม่มีบัญชี? <a href="#" id="switchToSignup">สมัครสมาชิก</a>
         </div>
       </div>
 
-      <div id="loginSentView" class="hidden">
+      <!-- ── Sign Up View ── -->
+      <div id="signupFormView" class="hidden">
+        <div class="login-form">
+          <input type="email" class="form-input" id="signupEmail"
+            placeholder="email@example.com" autocomplete="email">
+
+          <div class="pw-wrap">
+            <input type="password" class="form-input" id="signupPassword"
+              placeholder="รหัสผ่าน (อย่างน้อย 6 ตัว)" autocomplete="new-password" style="padding-right:44px">
+            <button class="pw-toggle" id="toggleSignupPw" tabindex="-1">👁</button>
+          </div>
+
+          <div class="pw-wrap">
+            <input type="password" class="form-input" id="signupConfirm"
+              placeholder="ยืนยันรหัสผ่าน" autocomplete="new-password" style="padding-right:44px">
+            <button class="pw-toggle" id="toggleConfirmPw" tabindex="-1">👁</button>
+          </div>
+
+          <div class="login-error hidden" id="signupError"></div>
+
+          <button class="btn btn-primary" id="signupBtn">สมัครสมาชิก</button>
+        </div>
+
+        <div class="login-footer">
+          มีบัญชีแล้ว? <a href="#" id="switchToLogin">เข้าสู่ระบบ</a>
+        </div>
+      </div>
+
+      <!-- ── Forgot Password View ── -->
+      <div id="forgotFormView" class="hidden">
+        <div class="login-form">
+          <input type="email" class="form-input" id="forgotEmail"
+            placeholder="email@example.com" autocomplete="email">
+
+          <div class="login-error hidden" id="forgotError"></div>
+
+          <button class="btn btn-primary" id="forgotBtn">ส่งลิงก์รีเซ็ตรหัสผ่าน</button>
+        </div>
+
+        <div class="login-footer">
+          <a href="#" id="backToLogin">← กลับหน้า Login</a>
+        </div>
+      </div>
+
+      <!-- ── Forgot Success View ── -->
+      <div id="forgotSentView" class="hidden">
         <div class="login-success">
-          ✓ ส่งลิงก์ไปที่อีเมลแล้ว<br>
+          ✓ ส่งลิงก์รีเซ็ตไปแล้ว<br>
           <small style="opacity: 0.8">เช็ค inbox / spam แล้วคลิกลิงก์</small>
         </div>
         <div class="login-footer">
-          ไม่ได้รับอีเมล? <a href="#" id="resendLink" style="color: var(--accent)">ส่งใหม่</a>
+          <a href="#" id="backToLoginFromForgot">← กลับหน้า Login</a>
         </div>
       </div>
+
+      <!-- ── Signup Success View ── -->
+      <div id="signupSentView" class="hidden">
+        <div class="login-success">
+          ✓ สมัครสมาชิกสำเร็จ!<br>
+          <small style="opacity: 0.8">เช็ค inbox เพื่อยืนยัน email ก่อนเข้าสู่ระบบ</small>
+        </div>
+        <div class="login-footer">
+          <a href="#" id="backToLoginFromSignup">← กลับหน้า Login</a>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -764,6 +857,12 @@
              SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY_HERE';
     }
 
+    // ── แสดง/ซ่อน views ใน login card ──
+    function showLoginView(viewId) {
+      ['loginFormView','signupFormView','forgotFormView','forgotSentView','signupSentView']
+        .forEach(id => document.getElementById(id).classList.toggle('hidden', id !== viewId));
+    }
+
     function showScreen(id) {
       ['loadingScreen','configWarning','loginScreen','appScreen'].forEach(s => {
         document.getElementById(s).classList.toggle('hidden', s !== id);
@@ -786,6 +885,7 @@
         } else {
           user = null;
           showScreen('loginScreen');
+          showLoginView('loginFormView');
         }
       });
 
@@ -796,6 +896,7 @@
         await enterApp();
       } else {
         showScreen('loginScreen');
+        showLoginView('loginFormView');
       }
     }
 
@@ -808,45 +909,148 @@
     }
 
     // ============================================
-    // AUTH
+    // AUTH — Email + Password
     // ============================================
-    async function sendMagicLink() {
-      const email = document.getElementById('loginEmail').value.trim();
+
+    // ── Sign In ──
+    async function signIn() {
+      const email    = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errEl    = document.getElementById('loginError');
+      errEl.classList.add('hidden');
+
       if (!email || !email.includes('@')) {
-        alert('กรอกอีเมลให้ถูกต้อง');
+        errEl.textContent = 'กรอกอีเมลให้ถูกต้อง';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (!password) {
+        errEl.textContent = 'กรอกรหัสผ่านด้วย';
+        errEl.classList.remove('hidden');
         return;
       }
 
       const btn = document.getElementById('loginBtn');
       btn.disabled = true;
-      btn.textContent = 'กำลังส่ง...';
+      btn.textContent = 'กำลังเข้าสู่ระบบ...';
 
-      const { error } = await sb.auth.signInWithOtp({
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+
+      btn.disabled = false;
+      btn.textContent = 'เข้าสู่ระบบ';
+
+      if (error) {
+        const msg = error.message.includes('Invalid login credentials')
+          ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'
+          : error.message.includes('Email not confirmed')
+          ? 'ยังไม่ได้ยืนยัน email — เช็ค inbox แล้วคลิกลิงก์ก่อน'
+          : error.message;
+        errEl.textContent = msg;
+        errEl.classList.remove('hidden');
+      }
+      // ถ้า success → onAuthStateChange จะ handle เอง
+    }
+
+    // ── Sign Up ──
+    async function signUp() {
+      const email    = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirm  = document.getElementById('signupConfirm').value;
+      const errEl    = document.getElementById('signupError');
+      errEl.classList.add('hidden');
+
+      if (!email || !email.includes('@')) {
+        errEl.textContent = 'กรอกอีเมลให้ถูกต้อง';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (password.length < 6) {
+        errEl.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+        errEl.classList.remove('hidden');
+        return;
+      }
+      if (password !== confirm) {
+        errEl.textContent = 'รหัสผ่านไม่ตรงกัน';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('signupBtn');
+      btn.disabled = true;
+      btn.textContent = 'กำลังสมัคร...';
+
+      const { data, error } = await sb.auth.signUp({
         email,
+        password,
         options: { emailRedirectTo: window.location.href.split('#')[0].split('?')[0] }
       });
 
       btn.disabled = false;
-      btn.textContent = 'ส่ง Magic Link';
+      btn.textContent = 'สมัครสมาชิก';
 
       if (error) {
-        alert('ผิดพลาด: ' + error.message);
+        const msg = error.message.includes('already registered')
+          ? 'อีเมลนี้มีบัญชีอยู่แล้ว — ลองเข้าสู่ระบบแทน'
+          : error.message;
+        errEl.textContent = msg;
+        errEl.classList.remove('hidden');
         return;
       }
 
-      document.getElementById('loginFormView').classList.add('hidden');
-      document.getElementById('loginSentView').classList.remove('hidden');
+      // ถ้า Supabase ปิด email confirmation → session จะมาทันที
+      if (data.session) {
+        // onAuthStateChange จะ handle เอง
+      } else {
+        // ต้อง confirm email ก่อน
+        showLoginView('signupSentView');
+      }
+    }
+
+    // ── Forgot Password ──
+    async function sendResetEmail() {
+      const email = document.getElementById('forgotEmail').value.trim();
+      const errEl = document.getElementById('forgotError');
+      errEl.classList.add('hidden');
+
+      if (!email || !email.includes('@')) {
+        errEl.textContent = 'กรอกอีเมลให้ถูกต้อง';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      const btn = document.getElementById('forgotBtn');
+      btn.disabled = true;
+      btn.textContent = 'กำลังส่ง...';
+
+      const { error } = await sb.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.href.split('#')[0].split('?')[0]
+      });
+
+      btn.disabled = false;
+      btn.textContent = 'ส่งลิงก์รีเซ็ตรหัสผ่าน';
+
+      if (error) {
+        errEl.textContent = error.message;
+        errEl.classList.remove('hidden');
+        return;
+      }
+      showLoginView('forgotSentView');
     }
 
     async function logout() {
       await sb.auth.signOut();
     }
 
+    // ── Toggle show/hide password ──
+    function togglePw(inputId) {
+      const input = document.getElementById(inputId);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
     // ============================================
     // DATA
     // ============================================
     async function loadData() {
-      // Load preferences
       const { data: prefs } = await sb
         .from('user_preferences')
         .select('*')
@@ -858,7 +1062,6 @@
         state.month = prefs.current_month || getCurrentMonth();
       }
 
-      // Load products
       const { data: products, error } = await sb
         .from('products')
         .select('*')
@@ -1183,18 +1386,58 @@
     // EVENT LISTENERS
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
-      // Login
-      document.getElementById('loginBtn').onclick = sendMagicLink;
+
+      // ── Login ──
+      document.getElementById('loginBtn').onclick = signIn;
       document.getElementById('loginEmail').addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendMagicLink();
+        if (e.key === 'Enter') document.getElementById('loginPassword').focus();
       });
-      document.getElementById('resendLink').onclick = (e) => {
+      document.getElementById('loginPassword').addEventListener('keypress', e => {
+        if (e.key === 'Enter') signIn();
+      });
+      document.getElementById('toggleLoginPw').onclick = () => togglePw('loginPassword');
+
+      // ── Sign Up ──
+      document.getElementById('switchToSignup').onclick = (e) => {
         e.preventDefault();
-        document.getElementById('loginFormView').classList.remove('hidden');
-        document.getElementById('loginSentView').classList.add('hidden');
+        showLoginView('signupFormView');
+      };
+      document.getElementById('switchToLogin').onclick = (e) => {
+        e.preventDefault();
+        showLoginView('loginFormView');
+      };
+      document.getElementById('signupBtn').onclick = signUp;
+      document.getElementById('toggleSignupPw').onclick  = () => togglePw('signupPassword');
+      document.getElementById('toggleConfirmPw').onclick = () => togglePw('signupConfirm');
+      document.getElementById('signupConfirm').addEventListener('keypress', e => {
+        if (e.key === 'Enter') signUp();
+      });
+      document.getElementById('backToLoginFromSignup').onclick = (e) => {
+        e.preventDefault();
+        showLoginView('loginFormView');
       };
 
-      // App
+      // ── Forgot Password ──
+      document.getElementById('forgotLink').onclick = (e) => {
+        e.preventDefault();
+        document.getElementById('forgotEmail').value =
+          document.getElementById('loginEmail').value;
+        showLoginView('forgotFormView');
+      };
+      document.getElementById('backToLogin').onclick = (e) => {
+        e.preventDefault();
+        showLoginView('loginFormView');
+      };
+      document.getElementById('backToLoginFromForgot').onclick = (e) => {
+        e.preventDefault();
+        showLoginView('loginFormView');
+      };
+      document.getElementById('forgotBtn').onclick = sendResetEmail;
+      document.getElementById('forgotEmail').addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendResetEmail();
+      });
+
+      // ── App ──
       document.getElementById('addBtn').onclick = () => openProductModal();
       document.getElementById('settingsBtn').onclick = () => {
         document.getElementById('settingsModal').classList.remove('hidden');
