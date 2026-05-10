@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Grind Tracker — Sales Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ============ THEMES ============ */
+    :root[data-theme="obsidian"] {
+      --bg: #0a0908; --bg-grad: radial-gradient(ellipse at top, #1a1612 0%, #0a0908 60%);
+      --surface: #15120f; --surface-2: #201c18; --border: #2a2520;
+      --text: #f4efe6; --text-dim: #8a8174; --text-faint: #4a443c;
+      --accent: #d4a256; --accent-2: #e8c178; --accent-soft: rgba(212, 162, 86, 0.12);
+      --success: #6dba6d; --danger: #d4574c; --grid-line: rgba(212, 162, 86, 0.04);
+    }
+    :root[data-theme="paper"] {
+      --bg: #f4ede0; --bg-grad: radial-gradient(ellipse at top, #faf4e7 0%, #f0e8d8 100%);
+      --surface: #ffffff; --surface-2: #faf6ec; --border: #d8cfb8;
+      --text: #1a1816; --text-dim: #6a6256; --text-faint: #b8aea0;
+      --accent: #c0392b; --accent-2: #a83020; --accent-soft: rgba(192, 57, 43, 0.08);
+      --success: #2e8b57; --danger: #b03030; --grid-line: rgba(26, 24, 22, 0.04);
+    }
+    :root[data-theme="mint"] {
+      --bg: #0c1f1c; --bg-grad: radial-gradient(ellipse at top, #14302a 0%, #0c1f1c 60%);
+      --surface: #112824; --surface-2: #1a3530; --border: #244542;
+      --text: #e8f5ee; --text-dim: #7ea89c; --text-faint: #3d5953;
+      --accent: #5eead4; --accent-2: #7ff0e0; --accent-soft: rgba(94, 234, 212, 0.12);
+      --success: #5eead4; --danger: #f87171; --grid-line: rgba(94, 234, 212, 0.04);
+    }
+    :root[data-theme="coral"] {
+      --bg: #fff4eb; --bg-grad: radial-gradient(ellipse at top, #fff8f0 0%, #ffe8d4 100%);
+      --surface: #ffffff; --surface-2: #fff8f0; --border: #f0d8c0;
+      --text: #2a1f18; --text-dim: #7a6052; --text-faint: #c0a890;
+      --accent: #ee5a3c; --accent-2: #f87655; --accent-soft: rgba(238, 90, 60, 0.1);
+      --success: #2a8a5f; --danger: #c4402a; --grid-line: rgba(42, 31, 24, 0.04);
+    }
+    :root[data-theme="neon"] {
+      --bg: #000000; --bg-grad: radial-gradient(ellipse at top, #0a0a1a 0%, #000000 60%);
+      --surface: #0a0a0a; --surface-2: #141420; --border: #2a2a3a;
+      --text: #ffffff; --text-dim: #8888a0; --text-faint: #444454;
+      --accent: #00fff0; --accent-2: #ff00ff; --accent-soft: rgba(0, 255, 240, 0.1);
+      --success: #00ff88; --danger: #ff3366; --grid-line: rgba(0, 255, 240, 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Noto Sans Thai', system-ui, sans-serif;
+      background: var(--bg); background-image: var(--bg-grad);
+      background-attachment: fixed; color: var(--text);
+      min-height: 100vh; font-size: 15px; line-height: 1.5;
+      transition: background-color 0.3s, color 0.3s; padding-bottom: 100px;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 40px 40px; pointer-events: none; z-index: 0;
+    }
+    .app { max-width: 600px; margin: 0 auto; padding: 20px 16px; position: relative; z-index: 1; }
+
+    /* ============ LOGIN SCREEN ============ */
+    .login-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 20px; position: relative; z-index: 1;
+    }
+    .login-card {
+      width: 100%; max-width: 420px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 40px 28px;
+      text-align: center;
+    }
+    .login-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 12px; letter-spacing: 0.3em; color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .login-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px; letter-spacing: 0.05em; line-height: 1; color: var(--text);
+      margin-bottom: 12px;
+    }
+    .login-sub {
+      font-size: 13px; color: var(--text-dim); margin-bottom: 32px;
+    }
+    .login-form { display: flex; flex-direction: column; gap: 12px; }
+    .login-success {
+      padding: 16px; background: var(--accent-soft); border-radius: 12px;
+      color: var(--accent); font-size: 14px; text-align: center;
+      border: 1px solid var(--accent);
+    }
+    .login-footer {
+      margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      color: var(--text-faint); letter-spacing: 0.1em;
+    }
+
+    /* ============ HEADER ============ */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; flex-direction: column; gap: 2px; }
+    .brand-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase;
+    }
+    .brand-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em;
+      color: var(--text); line-height: 1;
+    }
+    .month-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-dim); margin-top: 4px; letter-spacing: 0.05em;
+    }
+    .header-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text); cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: all 0.2s; font-size: 18px;
+    }
+    .icon-btn:hover, .icon-btn:active { background: var(--surface-2); border-color: var(--accent); }
+
+    /* ============ STATS HERO ============ */
+    .hero-stats {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 24px 20px; margin-bottom: 24px;
+      position: relative; overflow: hidden;
+    }
+    .hero-stats::before {
+      content: ''; position: absolute; top: -50%; right: -20%;
+      width: 60%; height: 200%;
+      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-dim); letter-spacing: 0.15em;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .hero-revenue {
+      font-family: 'Bebas Neue', sans-serif; font-size: 64px;
+      line-height: 1; color: var(--text); letter-spacing: 0.02em;
+      display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+    }
+    .hero-revenue .currency { font-size: 32px; color: var(--accent); font-weight: 400; }
+    .hero-revenue .digits { font-feature-settings: 'tnum'; }
+    .hero-divider { height: 1px; background: var(--border); margin: 20px 0 16px; }
+    .hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .hero-grid-item { display: flex; flex-direction: column; gap: 4px; }
+    .hero-grid-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .hero-grid-value {
+      font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+      color: var(--text); line-height: 1;
+    }
+    .hero-grid-value.accent { color: var(--accent); }
+
+    /* ============ SECTION ============ */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 24px 0 14px;
+    }
+    .section-title {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase;
+    }
+    .section-count {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent);
+    }
+
+    /* ============ PRODUCT CARD ============ */
+    .products-list { display: flex; flex-direction: column; gap: 12px; }
+    .product {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 16px; position: relative;
+      overflow: hidden; transition: all 0.2s;
+    }
+    .product.completed {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 8px 24px var(--accent-soft);
+    }
+    .product.completed::before {
+      content: 'GOAL HIT'; position: absolute; top: 12px; right: 12px;
+      font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      font-weight: 700; letter-spacing: 0.1em;
+      color: var(--bg); background: var(--accent);
+      padding: 4px 8px; border-radius: 4px; z-index: 2;
+    }
+    .product-top { display: flex; gap: 14px; margin-bottom: 14px; }
+    .product-image {
+      width: 64px; height: 64px; border-radius: 12px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      object-fit: cover; flex-shrink: 0; display: flex;
+      align-items: center; justify-content: center;
+      color: var(--text-faint); font-size: 24px; overflow: hidden;
+    }
+    .product-image img { width: 100%; height: 100%; object-fit: cover; }
+    .product-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .product-name {
+      font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.3;
+      overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
+      -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .product-price {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim);
+    }
+    .product-menu {
+      width: 32px; height: 32px; border-radius: 8px; border: none;
+      background: transparent; color: var(--text-dim); cursor: pointer;
+      flex-shrink: 0; align-self: flex-start; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 18px; letter-spacing: 0.1em;
+    }
+    .product-menu:active { background: var(--surface-2); }
+    .progress-section { margin-bottom: 14px; }
+    .progress-bar-wrap {
+      height: 8px; background: var(--surface-2); border-radius: 100px;
+      overflow: hidden; margin-bottom: 8px; position: relative;
+    }
+    .progress-bar {
+      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 100px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .progress-bar.over { background: linear-gradient(90deg, var(--success), var(--accent)); }
+    .progress-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
+    }
+    .progress-meta .count { color: var(--text); font-weight: 700; }
+    .progress-meta .revenue { color: var(--accent); font-weight: 700; }
+    .product-actions { display: grid; grid-template-columns: 50px 1fr; gap: 8px; }
+    .btn-minus, .btn-plus {
+      height: 44px; border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--text); border-radius: 12px; cursor: pointer;
+      font-size: 18px; font-weight: 700; transition: all 0.15s;
+      font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em;
+    }
+    .btn-plus {
+      background: var(--accent); color: var(--bg); border-color: var(--accent);
+      font-size: 14px; letter-spacing: 0.1em;
+    }
+    .btn-plus:active { transform: scale(0.97); background: var(--accent-2); }
+    .btn-minus:active { transform: scale(0.95); }
+    .btn-minus:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* ============ EMPTY ============ */
+    .empty {
+      text-align: center; padding: 60px 20px;
+      border: 1px dashed var(--border); border-radius: 18px;
+      background: var(--surface);
+    }
+    .empty-icon {
+      font-family: 'Bebas Neue', sans-serif; font-size: 48px;
+      color: var(--text-faint); margin-bottom: 8px; letter-spacing: 0.05em;
+    }
+    .empty-text { color: var(--text-dim); font-size: 14px; margin-bottom: 4px; }
+    .empty-hint {
+      color: var(--text-faint); font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ============ FAB ============ */
+    .fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: var(--accent); color: var(--bg); border: none;
+      font-size: 32px; font-weight: 300; line-height: 1; cursor: pointer;
+      box-shadow: 0 8px 24px var(--accent-soft), 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 50; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fab:active { transform: scale(0.92); }
+
+    /* ============ MODALS ============ */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 100; display: flex; align-items: flex-end; justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px 24px 0 0; width: 100%; max-width: 600px;
+      max-height: 90vh; overflow-y: auto;
+      animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      padding: 24px 20px 32px;
+    }
+    @media (min-width: 600px) {
+      .modal-backdrop { align-items: center; }
+      .modal { border-radius: 24px; max-height: 85vh; }
+    }
+    .modal-handle {
+      width: 40px; height: 4px; background: var(--border);
+      border-radius: 100px; margin: -8px auto 16px;
+    }
+    .modal-title {
+      font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+      letter-spacing: 0.05em; color: var(--text); margin-bottom: 4px;
+    }
+    .modal-subtitle {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--text-dim); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+
+    /* ============ FORM ============ */
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+      color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%; padding: 12px 14px; background: var(--surface-2);
+      border: 1px solid var(--border); border-radius: 12px; color: var(--text);
+      font-family: inherit; font-size: 15px; transition: border-color 0.2s;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-image-upload {
+      position: relative; width: 100%; height: 120px;
+      border: 2px dashed var(--border); border-radius: 14px;
+      background: var(--surface-2); display: flex; align-items: center;
+      justify-content: center; flex-direction: column; gap: 6px;
+      color: var(--text-dim); cursor: pointer; overflow: hidden; transition: all 0.2s;
+    }
+    .form-image-upload:hover { border-color: var(--accent); }
+    .form-image-upload.has-image { border-style: solid; border-color: var(--accent); }
+    .form-image-upload img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    }
+    .form-image-upload .upload-overlay {
+      position: relative; z-index: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+    }
+    .form-image-upload.has-image .upload-overlay {
+      background: rgba(0, 0, 0, 0.6); color: white;
+      padding: 6px 12px; border-radius: 8px; font-size: 11px;
+      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
+    }
+    .form-image-upload input[type="file"] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    }
+    .form-image-icon {
+      font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em;
+    }
+    .form-image-text {
+      font-size: 11px; font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+
+    /* ============ BUTTONS ============ */
+    .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+    .btn {
+      flex: 1; padding: 14px 16px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--surface-2);
+      color: var(--text); font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+    .btn-ghost { background: transparent; }
+
+    /* ============ THEME PICKER ============ */
+    .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .theme-card {
+      padding: 14px; border-radius: 14px; border: 2px solid transparent;
+      cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .theme-card.active { border-color: var(--accent); }
+    .theme-card-name {
+      font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+      letter-spacing: 0.08em; margin-bottom: 8px;
+    }
+    .theme-swatches { display: flex; gap: 4px; }
+    .swatch { width: 18px; height: 18px; border-radius: 50%; }
+    .theme-card[data-t="obsidian"] { background: #15120f; color: #f4efe6; }
+    .theme-card[data-t="paper"] { background: #ffffff; color: #1a1816; }
+    .theme-card[data-t="mint"] { background: #112824; color: #e8f5ee; }
+    .theme-card[data-t="coral"] { background: #ffffff; color: #2a1f18; }
+    .theme-card[data-t="neon"] { background: #0a0a0a; color: #ffffff; }
+
+    /* ============ MENU ============ */
+    .menu-options { display: flex; flex-direction: column; gap: 4px; }
+    .menu-option {
+      width: 100%; padding: 14px 16px; background: var(--surface-2);
+      border: 1px solid var(--border); border-radius: 12px;
+      color: var(--text); font-family: inherit; font-size: 14px;
+      cursor: pointer; text-align: left; display: flex;
+      align-items: center; gap: 12px; transition: all 0.15s;
+    }
+    .menu-option:active { transform: scale(0.99); background: var(--surface); }
+    .menu-option.danger { color: var(--danger); }
+    .menu-icon {
+      font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+      width: 24px; text-align: center;
+    }
+
+    /* ============ USER INFO ============ */
+    .user-email {
+      padding: 12px 14px; background: var(--surface-2);
+      border: 1px solid var(--border); border-radius: 12px;
+      font-size: 13px; color: var(--text-dim);
+      margin-bottom: 16px; word-break: break-all;
+    }
+    .user-email strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+    .reset-section {
+      margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
+    }
+
+    /* ============ LOADING ============ */
+    .loading-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 12px; color: var(--text-dim);
+    }
+    .spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border);
+      border-top-color: var(--accent); border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      letter-spacing: 0.2em; text-transform: uppercase;
+    }
+
+    /* ============ STATUS ============ */
+    .config-warning {
+      max-width: 500px; margin: 80px auto; padding: 32px 24px;
+      background: var(--surface); border: 1px solid var(--danger);
+      border-radius: 18px; color: var(--text);
+    }
+    .config-warning h2 {
+      font-family: 'Bebas Neue', sans-serif; font-size: 24px;
+      color: var(--danger); margin-bottom: 12px; letter-spacing: 0.05em;
+    }
+    .config-warning code {
+      display: block; padding: 12px; background: var(--surface-2);
+      border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; margin: 8px 0; color: var(--accent);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .product.pulse { animation: pulse 0.4s ease; }
+
+    .hidden { display: none !important; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+  </style>
+</head>
+<body data-theme="obsidian">
+
+  <!-- ============ LOADING ============ -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading...</div>
+  </div>
+
+  <!-- ============ CONFIG WARNING ============ -->
+  <div class="config-warning hidden" id="configWarning">
+    <h2>⚠️ ยังไม่ได้ตั้งค่า Supabase</h2>
+    <p style="margin-bottom: 16px; color: var(--text-dim); font-size: 13px;">
+      ต้องใส่ Supabase URL และ Anon Key ในไฟล์ <code>index.html</code> ก่อนใช้งาน
+    </p>
+    <p style="font-size: 12px; color: var(--text-dim);">เปิดดูคู่มือใน README.md</p>
+  </div>
+
+  <!-- ============ LOGIN ============ -->
+  <div class="login-screen hidden" id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">// MONTHLY</div>
+      <div class="login-title">GRIND TRACKER</div>
+      <div class="login-sub">ติดตามยอดขายต่อเดือน · ตั้งเป้า · ทำให้ถึง</div>
+
+      <div id="loginFormView">
+        <div class="login-form">
+          <input type="email" class="form-input" id="loginEmail" placeholder="email@example.com" autocomplete="email">
+          <button class="btn btn-primary" id="loginBtn">ส่ง Magic Link</button>
+        </div>
+        <div class="login-footer">
+          ระบบจะส่งลิงก์ login ไปทางอีเมล<br>คลิกในอีเมลเพื่อเข้าใช้งาน
+        </div>
+      </div>
+
+      <div id="loginSentView" class="hidden">
+        <div class="login-success">
+          ✓ ส่งลิงก์ไปที่อีเมลแล้ว<br>
+          <small style="opacity: 0.8">เช็ค inbox / spam แล้วคลิกลิงก์</small>
+        </div>
+        <div class="login-footer">
+          ไม่ได้รับอีเมล? <a href="#" id="resendLink" style="color: var(--accent)">ส่งใหม่</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN APP ============ -->
+  <div class="app hidden" id="appScreen">
+    <header>
+      <div class="brand">
+        <div class="brand-tag">// Monthly</div>
+        <div class="brand-title">GRIND TRACKER</div>
+        <div class="month-label" id="monthLabel">—</div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="settingsBtn">⚙</button>
+      </div>
+    </header>
+
+    <section class="hero-stats">
+      <div class="hero-label">Total Revenue This Month</div>
+      <div class="hero-revenue">
+        <span class="currency">฿</span>
+        <span class="digits" id="totalRevenue">0</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-grid">
+        <div class="hero-grid-item">
+          <div class="hero-grid-label">Sales</div>
+          <div class="hero-grid-value" id="totalSales">0</div>
+        </div>
+        <div class="hero-grid-item">
+          <div class="hero-grid-label">Goal</div>
+          <div class="hero-grid-value" id="totalGoal">0</div>
+        </div>
+        <div class="hero-grid-item">
+          <div class="hero-grid-label">Progress</div>
+          <div class="hero-grid-value accent" id="totalProgress">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-header">
+      <div class="section-title">// Products</div>
+      <div class="section-count" id="productCount">0 items</div>
+    </div>
+
+    <div class="products-list" id="productsList"></div>
+
+    <div class="empty hidden" id="emptyState">
+      <div class="empty-icon">+</div>
+      <div class="empty-text">ยังไม่มีสินค้า</div>
+      <div class="empty-hint">กดปุ่ม + เพื่อเริ่มต้น</div>
+    </div>
+
+    <button class="fab" id="addBtn">+</button>
+  </div>
+
+  <!-- ============ MODALS ============ -->
+  <div class="modal-backdrop hidden" id="productModal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="productModalTitle">เพิ่มสินค้าใหม่</div>
+      <div class="modal-subtitle">// Product Details</div>
+
+      <div class="form-group">
+        <label class="form-label">รูปภาพสินค้า (ไม่บังคับ)</label>
+        <div class="form-image-upload" id="imageUpload">
+          <div class="upload-overlay">
+            <div class="form-image-icon">+</div>
+            <div class="form-image-text">Tap to upload</div>
+          </div>
+          <input type="file" id="imageInput" accept="image/*">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">ชื่อสินค้า</label>
+        <input type="text" class="form-input" id="productName" placeholder="เช่น Course OMB" maxlength="60">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">ราคา (บาท)</label>
+          <input type="number" class="form-input" id="productPrice" placeholder="2990" min="0" step="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">เป้าต่อเดือน</label>
+          <input type="number" class="form-input" id="productGoal" placeholder="30" min="1" step="1">
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="productCancel">ยกเลิก</button>
+        <button class="btn btn-primary" id="productSave">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="settingsModal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-title">SETTINGS</div>
+      <div class="modal-subtitle">// Account &amp; Theme</div>
+
+      <div class="user-email" id="userEmailBox">
+        <strong>เข้าใช้งานในชื่อ</strong>
+        <span id="userEmail">—</span>
+      </div>
+
+      <label class="form-label">เลือกธีม</label>
+      <div class="theme-grid" id="themeGrid">
+        <div class="theme-card" data-t="obsidian">
+          <div class="theme-card-name">Obsidian</div>
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#15120f"></div>
+            <div class="swatch" style="background:#d4a256"></div>
+            <div class="swatch" style="background:#f4efe6"></div>
+          </div>
+        </div>
+        <div class="theme-card" data-t="paper">
+          <div class="theme-card-name">Paper</div>
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#ffffff;border:1px solid #ccc"></div>
+            <div class="swatch" style="background:#c0392b"></div>
+            <div class="swatch" style="background:#1a1816"></div>
+          </div>
+        </div>
+        <div class="theme-card" data-t="mint">
+          <div class="theme-card-name">Mint</div>
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#112824"></div>
+            <div class="swatch" style="background:#5eead4"></div>
+            <div class="swatch" style="background:#e8f5ee"></div>
+          </div>
+        </div>
+        <div class="theme-card" data-t="coral">
+          <div class="theme-card-name">Coral</div>
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#ffffff;border:1px solid #ccc"></div>
+            <div class="swatch" style="background:#ee5a3c"></div>
+            <div class="swatch" style="background:#2a1f18"></div>
+          </div>
+        </div>
+        <div class="theme-card" data-t="neon">
+          <div class="theme-card-name">Neon</div>
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#0a0a0a"></div>
+            <div class="swatch" style="background:#00fff0"></div>
+            <div class="swatch" style="background:#ff00ff"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reset-section">
+        <label class="form-label">เครื่องมือ</label>
+        <div class="menu-options">
+          <button class="menu-option" id="resetMonthBtn">
+            <span class="menu-icon">↻</span>
+            <span>รีเซ็ตเดือนใหม่ (เริ่มยอดขายจาก 0)</span>
+          </button>
+          <button class="menu-option danger" id="logoutBtn">
+            <span class="menu-icon">⇲</span>
+            <span>ออกจากระบบ</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" id="settingsClose">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="menuModal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="menuProductName">—</div>
+      <div class="modal-subtitle">// Actions</div>
+      <div class="menu-options">
+        <button class="menu-option" id="menuEdit">
+          <span class="menu-icon">✎</span>
+          <span>แก้ไขรายละเอียด</span>
+        </button>
+        <button class="menu-option" id="menuAddBulk">
+          <span class="menu-icon">+5</span>
+          <span>เพิ่มยอดขายหลายชิ้น</span>
+        </button>
+        <button class="menu-option danger" id="menuDelete">
+          <span class="menu-icon">⨯</span>
+          <span>ลบสินค้านี้</span>
+        </button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="menuClose">ปิด</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="confirmModal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="confirmTitle">ยืนยัน?</div>
+      <div class="modal-subtitle" id="confirmMessage">// Are you sure?</div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="confirmCancel">ยกเลิก</button>
+        <button class="btn btn-danger" id="confirmOk">ยืนยัน</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="bulkModal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-title">เพิ่มหลายชิ้น</div>
+      <div class="modal-subtitle">// Bulk Add</div>
+      <div class="form-group">
+        <label class="form-label">จำนวน</label>
+        <input type="number" class="form-input" id="bulkAmount" placeholder="5" min="1" step="1">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="bulkCancel">ยกเลิก</button>
+        <button class="btn btn-primary" id="bulkConfirm">เพิ่ม</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // ⚙️ CONFIG — แก้ 2 บรรทัดนี้หลังสร้าง Supabase project
+    // ============================================
+    const SUPABASE_URL = 'https://ojblscuqatthmkhtgfgc.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qYmxzY3VxYXR0aG1raHRnZmdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTc1MTcsImV4cCI6MjA5MzkzMzUxN30.yI1l7JEwnNxjkIkDf-1HmzKy-Ag1ZEV3QCkoKuubOF0';
+
+    // ============================================
+    // INIT
+    // ============================================
+    let sb = null;
+    let user = null;
+    let state = { products: [], theme: 'obsidian', month: getCurrentMonth() };
+    let editingProductId = null;
+    let menuProductId = null;
+    let pendingConfirm = null;
+    let pendingImage = null;
+
+    function getCurrentMonth() {
+      const d = new Date();
+      const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      return `${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    function isConfigured() {
+      return SUPABASE_URL && SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' &&
+             SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY_HERE';
+    }
+
+    function showScreen(id) {
+      ['loadingScreen','configWarning','loginScreen','appScreen'].forEach(s => {
+        document.getElementById(s).classList.toggle('hidden', s !== id);
+      });
+    }
+
+    async function init() {
+      if (!isConfigured()) {
+        showScreen('configWarning');
+        return;
+      }
+
+      sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // Listen to auth changes
+      sb.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+          user = session.user;
+          enterApp();
+        } else {
+          user = null;
+          showScreen('loginScreen');
+        }
+      });
+
+      // Initial check
+      const { data: { session } } = await sb.auth.getSession();
+      if (session && session.user) {
+        user = session.user;
+        await enterApp();
+      } else {
+        showScreen('loginScreen');
+      }
+    }
+
+    async function enterApp() {
+      showScreen('loadingScreen');
+      await loadData();
+      document.getElementById('userEmail').textContent = user.email || '—';
+      showScreen('appScreen');
+      render();
+    }
+
+    // ============================================
+    // AUTH
+    // ============================================
+    async function sendMagicLink() {
+      const email = document.getElementById('loginEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        alert('กรอกอีเมลให้ถูกต้อง');
+        return;
+      }
+
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.textContent = 'กำลังส่ง...';
+
+      const { error } = await sb.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: window.location.href.split('#')[0].split('?')[0] }
+      });
+
+      btn.disabled = false;
+      btn.textContent = 'ส่ง Magic Link';
+
+      if (error) {
+        alert('ผิดพลาด: ' + error.message);
+        return;
+      }
+
+      document.getElementById('loginFormView').classList.add('hidden');
+      document.getElementById('loginSentView').classList.remove('hidden');
+    }
+
+    async function logout() {
+      await sb.auth.signOut();
+    }
+
+    // ============================================
+    // DATA
+    // ============================================
+    async function loadData() {
+      // Load preferences
+      const { data: prefs } = await sb
+        .from('user_preferences')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (prefs) {
+        state.theme = prefs.theme || 'obsidian';
+        state.month = prefs.current_month || getCurrentMonth();
+      }
+
+      // Load products
+      const { data: products, error } = await sb
+        .from('products')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error(error);
+        alert('โหลดข้อมูลไม่สำเร็จ: ' + error.message);
+        return;
+      }
+
+      state.products = (products || []).map(p => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        goal: p.goal,
+        sold: p.sold,
+        image: p.image_data
+      }));
+    }
+
+    async function savePreferences() {
+      await sb.from('user_preferences').upsert({
+        user_id: user.id,
+        theme: state.theme,
+        current_month: state.month,
+        updated_at: new Date().toISOString()
+      });
+    }
+
+    async function dbInsertProduct(p) {
+      const { data, error } = await sb.from('products').insert({
+        user_id: user.id,
+        name: p.name,
+        price: p.price,
+        goal: p.goal,
+        sold: p.sold,
+        image_data: p.image
+      }).select().single();
+
+      if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return null; }
+      return data.id;
+    }
+
+    async function dbUpdateProduct(id, updates) {
+      const dbUpdates = {};
+      if ('name' in updates) dbUpdates.name = updates.name;
+      if ('price' in updates) dbUpdates.price = updates.price;
+      if ('goal' in updates) dbUpdates.goal = updates.goal;
+      if ('sold' in updates) dbUpdates.sold = updates.sold;
+      if ('image' in updates) dbUpdates.image_data = updates.image;
+      dbUpdates.updated_at = new Date().toISOString();
+
+      const { error } = await sb.from('products').update(dbUpdates).eq('id', id);
+      if (error) alert('อัพเดทไม่สำเร็จ: ' + error.message);
+    }
+
+    async function dbDeleteProduct(id) {
+      const { error } = await sb.from('products').delete().eq('id', id);
+      if (error) alert('ลบไม่สำเร็จ: ' + error.message);
+    }
+
+    // ============================================
+    // IMAGE COMPRESSION
+    // ============================================
+    function compressImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const MAX = 240;
+            let w = img.width, h = img.height;
+            if (w > h) {
+              if (w > MAX) { h = h * MAX / w; w = MAX; }
+            } else {
+              if (h > MAX) { w = w * MAX / h; h = MAX; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', 0.7));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ============================================
+    // RENDER
+    // ============================================
+    function formatNumber(n) { return n.toLocaleString('en-US'); }
+
+    function render() {
+      document.documentElement.setAttribute('data-theme', state.theme);
+      document.getElementById('monthLabel').textContent = state.month;
+
+      const totalRevenue = state.products.reduce((s, p) => s + (p.sold * p.price), 0);
+      const totalSales = state.products.reduce((s, p) => s + p.sold, 0);
+      const totalGoal = state.products.reduce((s, p) => s + p.goal, 0);
+      const progress = totalGoal > 0 ? Math.round((totalSales / totalGoal) * 100) : 0;
+
+      document.getElementById('totalRevenue').textContent = formatNumber(totalRevenue);
+      document.getElementById('totalSales').textContent = totalSales;
+      document.getElementById('totalGoal').textContent = totalGoal;
+      document.getElementById('totalProgress').textContent = progress + '%';
+      document.getElementById('productCount').textContent =
+        `${state.products.length} item${state.products.length !== 1 ? 's' : ''}`;
+
+      const list = document.getElementById('productsList');
+      const empty = document.getElementById('emptyState');
+
+      if (state.products.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+      } else {
+        empty.classList.add('hidden');
+        list.innerHTML = state.products.map(renderProductCard).join('');
+        attachProductHandlers();
+      }
+
+      document.querySelectorAll('.theme-card').forEach(c => {
+        c.classList.toggle('active', c.dataset.t === state.theme);
+      });
+    }
+
+    function renderProductCard(p) {
+      const pct = Math.min(100, Math.round((p.sold / p.goal) * 100));
+      const overPct = p.sold > p.goal ? Math.round(((p.sold - p.goal) / p.goal) * 100) : 0;
+      const isComplete = p.sold >= p.goal;
+      const revenue = p.sold * p.price;
+      const imgHtml = p.image
+        ? `<div class="product-image"><img src="${p.image}" alt=""></div>`
+        : `<div class="product-image">▢</div>`;
+
+      return `
+        <div class="product ${isComplete ? 'completed' : ''}" data-id="${p.id}">
+          <div class="product-top">
+            ${imgHtml}
+            <div class="product-info">
+              <div class="product-name">${escapeHtml(p.name)}</div>
+              <div class="product-price">฿${formatNumber(p.price)} / unit</div>
+            </div>
+            <button class="product-menu" data-action="menu" data-id="${p.id}">⋮</button>
+          </div>
+          <div class="progress-section">
+            <div class="progress-bar-wrap">
+              <div class="progress-bar ${overPct > 0 ? 'over' : ''}" style="width: ${pct}%"></div>
+            </div>
+            <div class="progress-meta">
+              <span><span class="count">${p.sold}</span> / ${p.goal} ขาย ${overPct > 0 ? `<span style="color:var(--success)">+${overPct}%</span>` : ''}</span>
+              <span class="revenue">฿${formatNumber(revenue)}</span>
+            </div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-minus" data-action="minus" data-id="${p.id}" ${p.sold === 0 ? 'disabled' : ''}>−</button>
+            <button class="btn-plus" data-action="plus" data-id="${p.id}">+ 1 SALE</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function attachProductHandlers() {
+      document.querySelectorAll('[data-action="plus"]').forEach(b => {
+        b.onclick = () => addSale(b.dataset.id, 1);
+      });
+      document.querySelectorAll('[data-action="minus"]').forEach(b => {
+        b.onclick = () => addSale(b.dataset.id, -1);
+      });
+      document.querySelectorAll('[data-action="menu"]').forEach(b => {
+        b.onclick = () => openProductMenu(b.dataset.id);
+      });
+    }
+
+    // ============================================
+    // ACTIONS
+    // ============================================
+    async function addSale(id, delta) {
+      const p = state.products.find(x => x.id === id);
+      if (!p) return;
+      const newSold = Math.max(0, p.sold + delta);
+      p.sold = newSold;
+      render();
+      if (delta > 0) {
+        const card = document.querySelector(`.product[data-id="${id}"]`);
+        if (card) {
+          card.classList.add('pulse');
+          setTimeout(() => card.classList.remove('pulse'), 400);
+        }
+      }
+      await dbUpdateProduct(id, { sold: newSold });
+    }
+
+    function openProductModal(id = null) {
+      editingProductId = id;
+      pendingImage = null;
+      const upload = document.getElementById('imageUpload');
+      upload.classList.remove('has-image');
+      const existingImg = upload.querySelector('img');
+      if (existingImg) existingImg.remove();
+      const overlay = upload.querySelector('.upload-overlay');
+      overlay.innerHTML = '<div class="form-image-icon">+</div><div class="form-image-text">Tap to upload</div>';
+
+      const title = document.getElementById('productModalTitle');
+      const nameInput = document.getElementById('productName');
+      const priceInput = document.getElementById('productPrice');
+      const goalInput = document.getElementById('productGoal');
+
+      if (id) {
+        const p = state.products.find(x => x.id === id);
+        title.textContent = 'แก้ไขสินค้า';
+        nameInput.value = p.name;
+        priceInput.value = p.price;
+        goalInput.value = p.goal;
+        if (p.image) { pendingImage = p.image; showUploadedImage(p.image); }
+      } else {
+        title.textContent = 'เพิ่มสินค้าใหม่';
+        nameInput.value = ''; priceInput.value = ''; goalInput.value = '';
+      }
+
+      document.getElementById('productModal').classList.remove('hidden');
+      setTimeout(() => nameInput.focus(), 100);
+    }
+
+    function showUploadedImage(dataUrl) {
+      const upload = document.getElementById('imageUpload');
+      upload.classList.add('has-image');
+      const existingImg = upload.querySelector('img');
+      if (existingImg) existingImg.remove();
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      upload.insertBefore(img, upload.firstChild);
+      upload.querySelector('.upload-overlay').innerHTML = '<div>เปลี่ยนรูป</div>';
+    }
+
+    async function saveProduct() {
+      const name = document.getElementById('productName').value.trim();
+      const price = parseInt(document.getElementById('productPrice').value, 10);
+      const goal = parseInt(document.getElementById('productGoal').value, 10);
+
+      if (!name) { alert('กรอกชื่อสินค้าด้วย'); return; }
+      if (!price || price < 0) { alert('กรอกราคาให้ถูกต้อง'); return; }
+      if (!goal || goal < 1) { alert('กรอกเป้าหมายให้ถูกต้อง'); return; }
+
+      const saveBtn = document.getElementById('productSave');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'กำลังบันทึก...';
+
+      try {
+        if (editingProductId) {
+          const p = state.products.find(x => x.id === editingProductId);
+          p.name = name; p.price = price; p.goal = goal; p.image = pendingImage;
+          await dbUpdateProduct(editingProductId, { name, price, goal, image: pendingImage });
+        } else {
+          const newProd = { name, price, goal, sold: 0, image: pendingImage };
+          const newId = await dbInsertProduct(newProd);
+          if (newId) {
+            state.products.push({ id: newId, ...newProd });
+          }
+        }
+        closeAllModals();
+        render();
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'บันทึก';
+      }
+    }
+
+    function openProductMenu(id) {
+      menuProductId = id;
+      const p = state.products.find(x => x.id === id);
+      document.getElementById('menuProductName').textContent = p.name;
+      document.getElementById('menuModal').classList.remove('hidden');
+    }
+
+    async function setTheme(t) {
+      state.theme = t;
+      render();
+      await savePreferences();
+    }
+
+    async function resetMonth() {
+      const updates = state.products.map(p =>
+        sb.from('products').update({ sold: 0 }).eq('id', p.id)
+      );
+      await Promise.all(updates);
+      state.products.forEach(p => p.sold = 0);
+      state.month = getCurrentMonth();
+      await savePreferences();
+      render();
+    }
+
+    async function deleteProduct(id) {
+      await dbDeleteProduct(id);
+      state.products = state.products.filter(x => x.id !== id);
+      render();
+    }
+
+    function showConfirm(title, message, onOk) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = '// ' + message;
+      pendingConfirm = onOk;
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.add('hidden'));
+      editingProductId = null;
+      menuProductId = null;
+      pendingConfirm = null;
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Login
+      document.getElementById('loginBtn').onclick = sendMagicLink;
+      document.getElementById('loginEmail').addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendMagicLink();
+      });
+      document.getElementById('resendLink').onclick = (e) => {
+        e.preventDefault();
+        document.getElementById('loginFormView').classList.remove('hidden');
+        document.getElementById('loginSentView').classList.add('hidden');
+      };
+
+      // App
+      document.getElementById('addBtn').onclick = () => openProductModal();
+      document.getElementById('settingsBtn').onclick = () => {
+        document.getElementById('settingsModal').classList.remove('hidden');
+      };
+
+      document.getElementById('productCancel').onclick = closeAllModals;
+      document.getElementById('productSave').onclick = saveProduct;
+
+      document.getElementById('imageInput').onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          const compressed = await compressImage(file);
+          pendingImage = compressed;
+          showUploadedImage(compressed);
+        } catch { alert('โหลดรูปไม่สำเร็จ'); }
+      };
+
+      document.getElementById('settingsClose').onclick = closeAllModals;
+      document.querySelectorAll('.theme-card').forEach(c => {
+        c.onclick = () => setTheme(c.dataset.t);
+      });
+      document.getElementById('resetMonthBtn').onclick = () => {
+        showConfirm('รีเซ็ตเดือนใหม่?', 'ยอดขายทุกสินค้าจะกลับเป็น 0', async () => {
+          await resetMonth();
+          closeAllModals();
+        });
+      };
+      document.getElementById('logoutBtn').onclick = () => {
+        showConfirm('ออกจากระบบ?', 'ต้อง login ใหม่ครั้งหน้า', async () => {
+          await logout();
+          closeAllModals();
+        });
+      };
+
+      document.getElementById('menuClose').onclick = closeAllModals;
+      document.getElementById('menuEdit').onclick = () => {
+        const id = menuProductId;
+        closeAllModals();
+        openProductModal(id);
+      };
+      document.getElementById('menuDelete').onclick = () => {
+        const p = state.products.find(x => x.id === menuProductId);
+        const id = menuProductId;
+        showConfirm('ลบสินค้า?', `${p.name} จะถูกลบถาวร`, async () => {
+          await deleteProduct(id);
+          closeAllModals();
+        });
+      };
+      document.getElementById('menuAddBulk').onclick = () => {
+        document.getElementById('menuModal').classList.add('hidden');
+        document.getElementById('bulkAmount').value = '';
+        document.getElementById('bulkModal').classList.remove('hidden');
+        setTimeout(() => document.getElementById('bulkAmount').focus(), 100);
+      };
+
+      document.getElementById('bulkCancel').onclick = closeAllModals;
+      document.getElementById('bulkConfirm').onclick = async () => {
+        const n = parseInt(document.getElementById('bulkAmount').value, 10);
+        if (!n || n < 1) { alert('กรอกจำนวนให้ถูกต้อง'); return; }
+        await addSale(menuProductId, n);
+        closeAllModals();
+      };
+
+      document.getElementById('confirmCancel').onclick = closeAllModals;
+      document.getElementById('confirmOk').onclick = async () => {
+        if (pendingConfirm) await pendingConfirm();
+      };
+
+      document.querySelectorAll('.modal-backdrop').forEach(m => {
+        m.addEventListener('click', e => {
+          if (e.target === m) closeAllModals();
+        });
+      });
+
+      // Start
+      init();
+    });
+  </script>
+</body>
+</html>
