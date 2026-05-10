@@ -7,607 +7,364 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
-  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <style>
     /* ============ THEMES ============ */
     :root[data-theme="obsidian"] {
-      --bg: #0a0908; --bg-grad: radial-gradient(ellipse at top, #1a1612 0%, #0a0908 60%);
-      --surface: #15120f; --surface-2: #201c18; --border: #2a2520;
-      --text: #f4efe6; --text-dim: #8a8174; --text-faint: #4a443c;
-      --accent: #d4a256; --accent-2: #e8c178; --accent-soft: rgba(212, 162, 86, 0.12);
-      --success: #6dba6d; --danger: #d4574c; --grid-line: rgba(212, 162, 86, 0.04);
+      --bg:#0a0908;--bg-grad:radial-gradient(ellipse at top,#1a1612 0%,#0a0908 60%);
+      --surface:#15120f;--surface-2:#201c18;--border:#2a2520;
+      --text:#f4efe6;--text-dim:#8a8174;--text-faint:#4a443c;
+      --accent:#d4a256;--accent-2:#e8c178;--accent-soft:rgba(212,162,86,.12);
+      --success:#6dba6d;--danger:#d4574c;--grid-line:rgba(212,162,86,.04);
     }
     :root[data-theme="paper"] {
-      --bg: #f4ede0; --bg-grad: radial-gradient(ellipse at top, #faf4e7 0%, #f0e8d8 100%);
-      --surface: #ffffff; --surface-2: #faf6ec; --border: #d8cfb8;
-      --text: #1a1816; --text-dim: #6a6256; --text-faint: #b8aea0;
-      --accent: #c0392b; --accent-2: #a83020; --accent-soft: rgba(192, 57, 43, 0.08);
-      --success: #2e8b57; --danger: #b03030; --grid-line: rgba(26, 24, 22, 0.04);
+      --bg:#f4ede0;--bg-grad:radial-gradient(ellipse at top,#faf4e7 0%,#f0e8d8 100%);
+      --surface:#fff;--surface-2:#faf6ec;--border:#d8cfb8;
+      --text:#1a1816;--text-dim:#6a6256;--text-faint:#b8aea0;
+      --accent:#c0392b;--accent-2:#a83020;--accent-soft:rgba(192,57,43,.08);
+      --success:#2e8b57;--danger:#b03030;--grid-line:rgba(26,24,22,.04);
     }
     :root[data-theme="mint"] {
-      --bg: #0c1f1c; --bg-grad: radial-gradient(ellipse at top, #14302a 0%, #0c1f1c 60%);
-      --surface: #112824; --surface-2: #1a3530; --border: #244542;
-      --text: #e8f5ee; --text-dim: #7ea89c; --text-faint: #3d5953;
-      --accent: #5eead4; --accent-2: #7ff0e0; --accent-soft: rgba(94, 234, 212, 0.12);
-      --success: #5eead4; --danger: #f87171; --grid-line: rgba(94, 234, 212, 0.04);
+      --bg:#0c1f1c;--bg-grad:radial-gradient(ellipse at top,#14302a 0%,#0c1f1c 60%);
+      --surface:#112824;--surface-2:#1a3530;--border:#244542;
+      --text:#e8f5ee;--text-dim:#7ea89c;--text-faint:#3d5953;
+      --accent:#5eead4;--accent-2:#7ff0e0;--accent-soft:rgba(94,234,212,.12);
+      --success:#5eead4;--danger:#f87171;--grid-line:rgba(94,234,212,.04);
     }
     :root[data-theme="coral"] {
-      --bg: #fff4eb; --bg-grad: radial-gradient(ellipse at top, #fff8f0 0%, #ffe8d4 100%);
-      --surface: #ffffff; --surface-2: #fff8f0; --border: #f0d8c0;
-      --text: #2a1f18; --text-dim: #7a6052; --text-faint: #c0a890;
-      --accent: #ee5a3c; --accent-2: #f87655; --accent-soft: rgba(238, 90, 60, 0.1);
-      --success: #2a8a5f; --danger: #c4402a; --grid-line: rgba(42, 31, 24, 0.04);
+      --bg:#fff4eb;--bg-grad:radial-gradient(ellipse at top,#fff8f0 0%,#ffe8d4 100%);
+      --surface:#fff;--surface-2:#fff8f0;--border:#f0d8c0;
+      --text:#2a1f18;--text-dim:#7a6052;--text-faint:#c0a890;
+      --accent:#ee5a3c;--accent-2:#f87655;--accent-soft:rgba(238,90,60,.1);
+      --success:#2a8a5f;--danger:#c4402a;--grid-line:rgba(42,31,24,.04);
     }
     :root[data-theme="neon"] {
-      --bg: #000000; --bg-grad: radial-gradient(ellipse at top, #0a0a1a 0%, #000000 60%);
-      --surface: #0a0a0a; --surface-2: #141420; --border: #2a2a3a;
-      --text: #ffffff; --text-dim: #8888a0; --text-faint: #444454;
-      --accent: #00fff0; --accent-2: #ff00ff; --accent-soft: rgba(0, 255, 240, 0.1);
-      --success: #00ff88; --danger: #ff3366; --grid-line: rgba(0, 255, 240, 0.04);
+      --bg:#000;--bg-grad:radial-gradient(ellipse at top,#0a0a1a 0%,#000 60%);
+      --surface:#0a0a0a;--surface-2:#141420;--border:#2a2a3a;
+      --text:#fff;--text-dim:#8888a0;--text-faint:#444454;
+      --accent:#00fff0;--accent-2:#ff00ff;--accent-soft:rgba(0,255,240,.1);
+      --success:#00ff88;--danger:#ff3366;--grid-line:rgba(0,255,240,.04);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: 'Noto Sans Thai', system-ui, sans-serif;
-      background: var(--bg); background-image: var(--bg-grad);
-      background-attachment: fixed; color: var(--text);
-      min-height: 100vh; font-size: 15px; line-height: 1.5;
-      transition: background-color 0.3s, color 0.3s; padding-bottom: 100px;
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{
+      font-family:'Noto Sans Thai',system-ui,sans-serif;
+      background:var(--bg);background-image:var(--bg-grad);
+      background-attachment:fixed;color:var(--text);
+      min-height:100vh;font-size:15px;line-height:1.5;
+      transition:background-color .3s,color .3s;padding-bottom:120px;
     }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background-image:
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 40px 40px; pointer-events: none; z-index: 0;
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);
+      background-size:40px 40px;pointer-events:none;z-index:0;
     }
-    .app { max-width: 600px; margin: 0 auto; padding: 20px 16px; position: relative; z-index: 1; }
+    .app{max-width:600px;margin:0 auto;padding:20px 16px;position:relative;z-index:1}
 
-    /* ============ LOGIN SCREEN ============ */
-    .login-screen {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      padding: 20px; position: relative; z-index: 1;
-    }
-    .login-card {
-      width: 100%; max-width: 420px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 24px; padding: 40px 28px;
-      text-align: center;
-    }
-    .login-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 12px; letter-spacing: 0.3em; color: var(--accent);
-      margin-bottom: 8px;
-    }
-    .login-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px; letter-spacing: 0.05em; line-height: 1; color: var(--text);
-      margin-bottom: 12px;
-    }
-    .login-sub {
-      font-size: 13px; color: var(--text-dim); margin-bottom: 32px;
-    }
-    .login-form { display: flex; flex-direction: column; gap: 12px; }
-    .login-error {
-      padding: 12px 14px; background: rgba(212, 87, 76, 0.12);
-      border: 1px solid var(--danger); border-radius: 10px;
-      color: var(--danger); font-size: 13px; text-align: left;
-    }
-    .login-success {
-      padding: 16px; background: var(--accent-soft); border-radius: 12px;
-      color: var(--accent); font-size: 14px; text-align: center;
-      border: 1px solid var(--accent);
-    }
-    .login-footer {
-      margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border);
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: var(--text-faint); letter-spacing: 0.05em;
-    }
-    .login-footer a { color: var(--accent); text-decoration: none; }
-    .login-footer a:hover { text-decoration: underline; }
-    .login-divider {
-      display: flex; align-items: center; gap: 10px;
-      color: var(--text-faint); font-size: 11px;
-      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
-    }
-    .login-divider::before, .login-divider::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
-    .pw-wrap { position: relative; }
-    .pw-toggle {
-      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; color: var(--text-dim);
-      cursor: pointer; font-size: 16px; padding: 4px; line-height: 1;
-    }
-    .pw-toggle:hover { color: var(--text); }
+    /* ============ LOGIN ============ */
+    .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;z-index:1}
+    .login-card{width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 28px;text-align:center}
+    .login-logo{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.3em;color:var(--accent);margin-bottom:8px}
+    .login-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:.05em;line-height:1;color:var(--text);margin-bottom:12px}
+    .login-sub{font-size:13px;color:var(--text-dim);margin-bottom:32px}
+    .login-form{display:flex;flex-direction:column;gap:12px}
+    .login-error{padding:12px 14px;background:rgba(212,87,76,.12);border:1px solid var(--danger);border-radius:10px;color:var(--danger);font-size:13px;text-align:left}
+    .login-success{padding:16px;background:var(--accent-soft);border-radius:12px;color:var(--accent);font-size:14px;text-align:center;border:1px solid var(--accent)}
+    .login-footer{margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:.05em}
+    .login-footer a{color:var(--accent);text-decoration:none}
+    .pw-wrap{position:relative}
+    .pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:16px;padding:4px;line-height:1}
 
     /* ============ HEADER ============ */
-    header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
-    }
-    .brand { display: flex; flex-direction: column; gap: 2px; }
-    .brand-tag {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-      letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase;
-    }
-    .brand-title {
-      font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em;
-      color: var(--text); line-height: 1;
-    }
-    .month-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: var(--text-dim); margin-top: 4px; letter-spacing: 0.05em;
-    }
-    .header-actions { display: flex; gap: 8px; }
-    .icon-btn {
-      width: 42px; height: 42px; border-radius: 12px;
-      border: 1px solid var(--border); background: var(--surface);
-      color: var(--text); cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
-      transition: all 0.2s; font-size: 18px;
-    }
-    .icon-btn:hover, .icon-btn:active { background: var(--surface-2); border-color: var(--accent); }
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+    .brand{display:flex;flex-direction:column;gap:2px}
+    .brand-tag{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+    .brand-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.05em;color:var(--text);line-height:1}
+    .month-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);margin-top:4px;letter-spacing:.05em}
+    .header-actions{display:flex;gap:8px}
+    .icon-btn{width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:18px}
+    .icon-btn:hover,.icon-btn:active{background:var(--surface-2);border-color:var(--accent)}
 
-    /* ============ STATS HERO ============ */
-    .hero-stats {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 20px; padding: 24px 20px; margin-bottom: 24px;
-      position: relative; overflow: hidden;
-    }
-    .hero-stats::before {
-      content: ''; position: absolute; top: -50%; right: -20%;
-      width: 60%; height: 200%;
-      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: var(--text-dim); letter-spacing: 0.15em;
-      text-transform: uppercase; margin-bottom: 8px;
-    }
-    .hero-revenue {
-      font-family: 'Bebas Neue', sans-serif; font-size: 64px;
-      line-height: 1; color: var(--text); letter-spacing: 0.02em;
-      display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
-    }
-    .hero-revenue .currency { font-size: 32px; color: var(--accent); font-weight: 400; }
-    .hero-revenue .digits { font-feature-settings: 'tnum'; }
-    .hero-divider { height: 1px; background: var(--border); margin: 20px 0 16px; }
-    .hero-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .hero-grid-item { display: flex; flex-direction: column; gap: 4px; }
-    .hero-grid-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 9px;
-      color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase;
-    }
-    .hero-grid-value {
-      font-family: 'Bebas Neue', sans-serif; font-size: 24px;
-      color: var(--text); line-height: 1;
-    }
-    .hero-grid-value.accent { color: var(--accent); }
+    /* ============ QUOTE TOAST ============ */
+    .quote-toast{position:fixed;bottom:90px;left:16px;right:16px;max-width:568px;margin:0 auto;z-index:200;animation:slideUpFade .4s cubic-bezier(.32,.72,0,1)}
+    @keyframes slideUpFade{from{transform:translateY(60px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .quote-inner{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;display:flex;align-items:flex-start;gap:12px;box-shadow:0 16px 40px rgba(0,0,0,.4)}
+    .quote-icon{color:var(--accent);font-size:18px;flex-shrink:0;margin-top:1px}
+    .quote-content{flex:1}
+    .quote-text{font-size:13px;color:var(--text);line-height:1.6;font-style:italic;margin-bottom:4px}
+    .quote-author{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.08em}
+    .quote-close{background:none;border:none;color:var(--text-faint);cursor:pointer;font-size:22px;line-height:1;padding:0 2px;flex-shrink:0;margin-top:-2px}
 
-    /* ============ SECTION ============ */
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin: 24px 0 14px;
-    }
-    .section-title {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: var(--text-dim); letter-spacing: 0.15em; text-transform: uppercase;
-    }
-    .section-count {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent);
-    }
+    /* ============ GOALS CARD ============ */
+    .goals-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden}
+    .goals-card::before{content:'';position:absolute;top:-40%;left:-10%;width:70%;height:180%;background:radial-gradient(circle,var(--accent-soft) 0%,transparent 70%);pointer-events:none}
+    .goals-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+    .goals-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:.2em;margin-bottom:3px;text-transform:uppercase}
+    .goals-headline{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.04em;color:var(--text);line-height:1}
+    .goal-row{margin-bottom:14px}
+    .goal-row:last-of-type{margin-bottom:0}
+    .goal-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+    .goal-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase}
+    .goal-pct{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent);letter-spacing:.03em}
+    .goal-pct.over{color:var(--success)}
+    .goal-bar-wrap{height:10px;background:var(--surface-2);border-radius:100px;overflow:hidden;margin-bottom:6px}
+    .goal-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:100px;transition:width .6s cubic-bezier(.4,0,.2,1);max-width:100%}
+    .goal-bar.over{background:linear-gradient(90deg,var(--success),var(--accent-2))}
+    .goal-detail{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.04em;line-height:1.6}
+    .goal-detail .hl{color:var(--text)}
+    .goal-detail .warn{color:var(--danger)}
+    .goal-detail .ok{color:var(--success)}
+    .goals-divider{height:1px;background:var(--border);margin:14px 0}
+    .goals-setup{text-align:center;padding:8px 0 0}
+
+    /* ============ PERIOD TABS ============ */
+    .period-tabs{display:flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:12px}
+    .period-tab{flex:1;padding:8px 4px;border:none;background:transparent;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;cursor:pointer;border-radius:10px;transition:all .2s;white-space:nowrap}
+    .period-tab.active{background:var(--accent);color:var(--bg);font-weight:700}
+    .period-tab:not(.active):hover{background:var(--surface-2)}
+
+    /* ============ CHART SECTION ============ */
+    .chart-section{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px 16px 12px;margin-bottom:12px}
+    .chart-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
+    .chart-revenue{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.02em;color:var(--text);line-height:1}
+    .chart-sub{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+    .chart-comparison{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.05em}
+    .chart-comparison.up{color:var(--success)}
+    .chart-comparison.down{color:var(--danger)}
+    .chart-comparison.flat{color:var(--text-dim)}
+    .chart-period-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-faint);letter-spacing:.08em}
+    .chart-container{position:relative;height:160px;touch-action:pan-y}
+    .chart-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-faint);letter-spacing:.1em;text-align:center}
+
+    /* ============ STATS STRIP ============ */
+    .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center}
+    .stat-val{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--text);line-height:1;margin-bottom:3px;letter-spacing:.02em}
+    .stat-val.accent{color:var(--accent)}
+    .stat-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase}
+
+    /* ============ SECTION HEADER ============ */
+    .section-header{display:flex;align-items:center;justify-content:space-between;margin:20px 0 14px}
+    .section-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.15em;text-transform:uppercase}
+    .section-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent)}
 
     /* ============ PRODUCT CARD ============ */
-    .products-list { display: flex; flex-direction: column; gap: 12px; }
-    .product {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 18px; padding: 16px; position: relative;
-      overflow: hidden; transition: all 0.2s;
-    }
-    .product.completed {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent), 0 8px 24px var(--accent-soft);
-    }
-    .product.completed::before {
-      content: 'GOAL HIT'; position: absolute; top: 12px; right: 12px;
-      font-family: 'JetBrains Mono', monospace; font-size: 9px;
-      font-weight: 700; letter-spacing: 0.1em;
-      color: var(--bg); background: var(--accent);
-      padding: 4px 8px; border-radius: 4px; z-index: 2;
-    }
-    .product-top { display: flex; gap: 14px; margin-bottom: 14px; }
-    .product-image {
-      width: 64px; height: 64px; border-radius: 12px;
-      background: var(--surface-2); border: 1px solid var(--border);
-      object-fit: cover; flex-shrink: 0; display: flex;
-      align-items: center; justify-content: center;
-      color: var(--text-faint); font-size: 24px; overflow: hidden;
-    }
-    .product-image img { width: 100%; height: 100%; object-fit: cover; }
-    .product-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-    .product-name {
-      font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.3;
-      overflow: hidden; text-overflow: ellipsis; display: -webkit-box;
-      -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    }
-    .product-price {
-      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim);
-    }
-    .product-menu {
-      width: 32px; height: 32px; border-radius: 8px; border: none;
-      background: transparent; color: var(--text-dim); cursor: pointer;
-      flex-shrink: 0; align-self: flex-start; display: flex;
-      align-items: center; justify-content: center;
-      font-size: 18px; letter-spacing: 0.1em;
-    }
-    .product-menu:active { background: var(--surface-2); }
-    .progress-section { margin-bottom: 14px; }
-    .progress-bar-wrap {
-      height: 8px; background: var(--surface-2); border-radius: 100px;
-      overflow: hidden; margin-bottom: 8px; position: relative;
-    }
-    .progress-bar {
-      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      border-radius: 100px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .progress-bar.over { background: linear-gradient(90deg, var(--success), var(--accent)); }
-    .progress-meta {
-      display: flex; justify-content: space-between; align-items: center;
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
-    }
-    .progress-meta .count { color: var(--text); font-weight: 700; }
-    .progress-meta .revenue { color: var(--accent); font-weight: 700; }
-    .product-actions { display: grid; grid-template-columns: 50px 1fr; gap: 8px; }
-    .btn-minus, .btn-plus {
-      height: 44px; border: 1px solid var(--border); background: var(--surface-2);
-      color: var(--text); border-radius: 12px; cursor: pointer;
-      font-size: 18px; font-weight: 700; transition: all 0.15s;
-      font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.05em;
-    }
-    .btn-plus {
-      background: var(--accent); color: var(--bg); border-color: var(--accent);
-      font-size: 14px; letter-spacing: 0.1em;
-    }
-    .btn-plus:active { transform: scale(0.97); background: var(--accent-2); }
-    .btn-minus:active { transform: scale(0.95); }
-    .btn-minus:disabled { opacity: 0.3; cursor: not-allowed; }
+    .products-list{display:flex;flex-direction:column;gap:12px}
+    .product{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;position:relative;overflow:hidden;transition:all .2s}
+    .product.completed{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 8px 24px var(--accent-soft)}
+    .product.completed::before{content:'GOAL HIT';position:absolute;top:12px;right:12px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--bg);background:var(--accent);padding:4px 8px;border-radius:4px;z-index:2}
+    .product-top{display:flex;gap:14px;margin-bottom:14px}
+    .product-image{width:64px;height:64px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);object-fit:cover;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:var(--text-faint);font-size:24px;overflow:hidden}
+    .product-image img{width:100%;height:100%;object-fit:cover}
+    .product-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+    .product-name{font-size:16px;font-weight:700;color:var(--text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+    .product-price{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim)}
+    .product-menu{width:32px;height:32px;border-radius:8px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;flex-shrink:0;align-self:flex-start;display:flex;align-items:center;justify-content:center;font-size:18px;letter-spacing:.1em}
+    .product-menu:active{background:var(--surface-2)}
+    .progress-section{margin-bottom:14px}
+    .progress-bar-wrap{height:8px;background:var(--surface-2);border-radius:100px;overflow:hidden;margin-bottom:8px}
+    .progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:100px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+    .progress-bar.over{background:linear-gradient(90deg,var(--success),var(--accent))}
+    .progress-meta{display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim)}
+    .progress-meta .count{color:var(--text);font-weight:700}
+    .progress-meta .revenue{color:var(--accent);font-weight:700}
+    .product-actions{display:grid;grid-template-columns:50px 1fr;gap:8px}
+    .btn-minus,.btn-plus{height:44px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:12px;cursor:pointer;font-size:18px;font-weight:700;transition:all .15s;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em}
+    .btn-plus{background:var(--accent);color:var(--bg);border-color:var(--accent);font-size:14px;letter-spacing:.1em}
+    .btn-plus:active{transform:scale(.97);background:var(--accent-2)}
+    .btn-minus:active{transform:scale(.95)}
+    .btn-minus:disabled{opacity:.3;cursor:not-allowed}
 
     /* ============ EMPTY ============ */
-    .empty {
-      text-align: center; padding: 60px 20px;
-      border: 1px dashed var(--border); border-radius: 18px;
-      background: var(--surface);
-    }
-    .empty-icon {
-      font-family: 'Bebas Neue', sans-serif; font-size: 48px;
-      color: var(--text-faint); margin-bottom: 8px; letter-spacing: 0.05em;
-    }
-    .empty-text { color: var(--text-dim); font-size: 14px; margin-bottom: 4px; }
-    .empty-hint {
-      color: var(--text-faint); font-size: 12px; font-family: 'JetBrains Mono', monospace;
-    }
+    .empty{text-align:center;padding:60px 20px;border:1px dashed var(--border);border-radius:18px;background:var(--surface)}
+    .empty-icon{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--text-faint);margin-bottom:8px;letter-spacing:.05em}
+    .empty-text{color:var(--text-dim);font-size:14px;margin-bottom:4px}
+    .empty-hint{color:var(--text-faint);font-size:12px;font-family:'JetBrains Mono',monospace}
 
     /* ============ FAB ============ */
-    .fab {
-      position: fixed; bottom: 24px; right: 24px;
-      width: 60px; height: 60px; border-radius: 50%;
-      background: var(--accent); color: var(--bg); border: none;
-      font-size: 32px; font-weight: 300; line-height: 1; cursor: pointer;
-      box-shadow: 0 8px 24px var(--accent-soft), 0 4px 12px rgba(0, 0, 0, 0.2);
-      z-index: 50; transition: all 0.2s;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .fab:active { transform: scale(0.92); }
+    .fab{position:fixed;bottom:24px;right:24px;width:60px;height:60px;border-radius:50%;background:var(--accent);color:var(--bg);border:none;font-size:32px;font-weight:300;line-height:1;cursor:pointer;box-shadow:0 8px 24px var(--accent-soft),0 4px 12px rgba(0,0,0,.2);z-index:50;transition:all .2s;display:flex;align-items:center;justify-content:center}
+    .fab:active{transform:scale(.92)}
 
     /* ============ MODALS ============ */
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      z-index: 100; display: flex; align-items: flex-end; justify-content: center;
-      animation: fadeIn 0.2s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-    .modal {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 24px 24px 0 0; width: 100%; max-width: 600px;
-      max-height: 90vh; overflow-y: auto;
-      animation: slideUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
-      padding: 24px 20px 32px;
-    }
-    @media (min-width: 600px) {
-      .modal-backdrop { align-items: center; }
-      .modal { border-radius: 24px; max-height: 85vh; }
-    }
-    .modal-handle {
-      width: 40px; height: 4px; background: var(--border);
-      border-radius: 100px; margin: -8px auto 16px;
-    }
-    .modal-title {
-      font-family: 'Bebas Neue', sans-serif; font-size: 28px;
-      letter-spacing: 0.05em; color: var(--text); margin-bottom: 4px;
-    }
-    .modal-subtitle {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      color: var(--text-dim); letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 24px;
-    }
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:100;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:24px 24px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:slideUp .3s cubic-bezier(.32,.72,0,1);padding:24px 20px 32px}
+    @media(min-width:600px){.modal-backdrop{align-items:center}.modal{border-radius:24px;max-height:85vh}}
+    .modal-handle{width:40px;height:4px;background:var(--border);border-radius:100px;margin:-8px auto 16px}
+    .modal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.05em;color:var(--text);margin-bottom:4px}
+    .modal-subtitle{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px}
 
     /* ============ FORM ============ */
-    .form-group { margin-bottom: 16px; }
-    .form-label {
-      display: block; font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px;
-    }
-    .form-input {
-      width: 100%; padding: 12px 14px; background: var(--surface-2);
-      border: 1px solid var(--border); border-radius: 12px; color: var(--text);
-      font-family: inherit; font-size: 15px; transition: border-color 0.2s;
-    }
-    .form-input:focus { outline: none; border-color: var(--accent); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-image-upload {
-      position: relative; width: 100%; height: 120px;
-      border: 2px dashed var(--border); border-radius: 14px;
-      background: var(--surface-2); display: flex; align-items: center;
-      justify-content: center; flex-direction: column; gap: 6px;
-      color: var(--text-dim); cursor: pointer; overflow: hidden; transition: all 0.2s;
-    }
-    .form-image-upload:hover { border-color: var(--accent); }
-    .form-image-upload.has-image { border-style: solid; border-color: var(--accent); }
-    .form-image-upload img {
-      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    }
-    .form-image-upload .upload-overlay {
-      position: relative; z-index: 1; display: flex; flex-direction: column;
-      align-items: center; gap: 4px;
-    }
-    .form-image-upload.has-image .upload-overlay {
-      background: rgba(0, 0, 0, 0.6); color: white;
-      padding: 6px 12px; border-radius: 8px; font-size: 11px;
-      font-family: 'JetBrains Mono', monospace; letter-spacing: 0.1em;
-    }
-    .form-image-upload input[type="file"] {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer;
-    }
-    .form-image-icon {
-      font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.05em;
-    }
-    .form-image-text {
-      font-size: 11px; font-family: 'JetBrains Mono', monospace;
-      letter-spacing: 0.1em; text-transform: uppercase;
-    }
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
+    .form-input{width:100%;padding:12px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;transition:border-color .2s}
+    .form-input:focus{outline:none;border-color:var(--accent)}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-image-upload{position:relative;width:100%;height:120px;border:2px dashed var(--border);border-radius:14px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--text-dim);cursor:pointer;overflow:hidden;transition:all .2s}
+    .form-image-upload:hover{border-color:var(--accent)}
+    .form-image-upload.has-image{border-style:solid;border-color:var(--accent)}
+    .form-image-upload img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .form-image-upload .upload-overlay{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+    .form-image-upload.has-image .upload-overlay{background:rgba(0,0,0,.6);color:#fff;padding:6px 12px;border-radius:8px;font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em}
+    .form-image-upload input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .form-image-icon{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.05em}
+    .form-image-text{font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
 
     /* ============ BUTTONS ============ */
-    .btn-row { display: flex; gap: 10px; margin-top: 24px; }
-    .btn {
-      flex: 1; padding: 14px 16px; border-radius: 12px;
-      border: 1px solid var(--border); background: var(--surface-2);
-      color: var(--text); font-family: 'Bebas Neue', sans-serif;
-      font-size: 15px; letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-    .btn-danger { background: transparent; color: var(--danger); border-color: var(--danger); }
-    .btn-ghost { background: transparent; }
+    .btn-row{display:flex;gap:10px;margin-top:24px}
+    .btn{flex:1;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.1em;cursor:pointer;transition:all .15s}
+    .btn:active{transform:scale(.98)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .btn-primary{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+    .btn-danger{background:transparent;color:var(--danger);border-color:var(--danger)}
+    .btn-ghost{background:transparent}
 
     /* ============ THEME PICKER ============ */
-    .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .theme-card {
-      padding: 14px; border-radius: 14px; border: 2px solid transparent;
-      cursor: pointer; transition: all 0.2s; position: relative;
-    }
-    .theme-card.active { border-color: var(--accent); }
-    .theme-card-name {
-      font-family: 'Bebas Neue', sans-serif; font-size: 16px;
-      letter-spacing: 0.08em; margin-bottom: 8px;
-    }
-    .theme-swatches { display: flex; gap: 4px; }
-    .swatch { width: 18px; height: 18px; border-radius: 50%; }
-    .theme-card[data-t="obsidian"] { background: #15120f; color: #f4efe6; }
-    .theme-card[data-t="paper"] { background: #ffffff; color: #1a1816; }
-    .theme-card[data-t="mint"] { background: #112824; color: #e8f5ee; }
-    .theme-card[data-t="coral"] { background: #ffffff; color: #2a1f18; }
-    .theme-card[data-t="neon"] { background: #0a0a0a; color: #ffffff; }
+    .theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .theme-card{padding:14px;border-radius:14px;border:2px solid transparent;cursor:pointer;transition:all .2s}
+    .theme-card.active{border-color:var(--accent)}
+    .theme-card-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.08em;margin-bottom:8px}
+    .theme-swatches{display:flex;gap:4px}
+    .swatch{width:18px;height:18px;border-radius:50%}
+    .theme-card[data-t="obsidian"]{background:#15120f;color:#f4efe6}
+    .theme-card[data-t="paper"]{background:#fff;color:#1a1816}
+    .theme-card[data-t="mint"]{background:#112824;color:#e8f5ee}
+    .theme-card[data-t="coral"]{background:#fff;color:#2a1f18}
+    .theme-card[data-t="neon"]{background:#0a0a0a;color:#fff}
 
     /* ============ MENU ============ */
-    .menu-options { display: flex; flex-direction: column; gap: 4px; }
-    .menu-option {
-      width: 100%; padding: 14px 16px; background: var(--surface-2);
-      border: 1px solid var(--border); border-radius: 12px;
-      color: var(--text); font-family: inherit; font-size: 14px;
-      cursor: pointer; text-align: left; display: flex;
-      align-items: center; gap: 12px; transition: all 0.15s;
-    }
-    .menu-option:active { transform: scale(0.99); background: var(--surface); }
-    .menu-option.danger { color: var(--danger); }
-    .menu-icon {
-      font-family: 'Bebas Neue', sans-serif; font-size: 18px;
-      width: 24px; text-align: center;
-    }
+    .menu-options{display:flex;flex-direction:column;gap:4px}
+    .menu-option{width:100%;padding:14px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:12px;transition:all .15s}
+    .menu-option:active{transform:scale(.99);background:var(--surface)}
+    .menu-option.danger{color:var(--danger)}
+    .menu-icon{font-family:'Bebas Neue',sans-serif;font-size:18px;width:24px;text-align:center}
 
     /* ============ USER INFO ============ */
-    .user-email {
-      padding: 12px 14px; background: var(--surface-2);
-      border: 1px solid var(--border); border-radius: 12px;
-      font-size: 13px; color: var(--text-dim);
-      margin-bottom: 16px; word-break: break-all;
-    }
-    .user-email strong { color: var(--text); display: block; margin-bottom: 2px; }
+    .user-email{padding:12px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--text-dim);margin-bottom:16px;word-break:break-all}
+    .user-email strong{color:var(--text);display:block;margin-bottom:2px}
+    .reset-section{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
 
-    .reset-section {
-      margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
-    }
+    /* ============ GOAL CARD (shareable) ============ */
+    #goalCardModal{align-items:center;justify-content:center;padding:20px}
+    .goal-card{background:#0a0908;border:1px solid #2a2520;border-radius:28px;padding:36px 28px;width:100%;max-width:340px;position:relative;text-align:left}
+    .gc-close{position:absolute;top:14px;right:14px;background:#201c18;border:none;color:#8a8174;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+    .gc-logo{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:#d4a256;margin-bottom:6px;text-transform:uppercase}
+    .gc-title{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:.9;letter-spacing:.04em;color:#f4efe6;margin-bottom:20px}
+    .gc-divider{height:1px;background:#2a2520;margin:18px 0}
+    .gc-goal{margin-bottom:18px}
+    .gc-goal-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#8a8174;margin-bottom:4px}
+    .gc-goal-amount{font-family:'Bebas Neue',sans-serif;font-size:38px;color:#f4efe6;line-height:1;letter-spacing:.02em;margin-bottom:10px}
+    .gc-bar-wrap{height:8px;background:#201c18;border-radius:100px;overflow:hidden;margin-bottom:6px}
+    .gc-bar-fill{height:100%;background:linear-gradient(90deg,#d4a256,#e8c178);border-radius:100px;transition:width .6s}
+    .gc-pct{font-family:'JetBrains Mono',monospace;font-size:11px;color:#d4a256;letter-spacing:.1em}
+    .gc-footer{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:#8a8174;letter-spacing:.08em}
+    .gc-brand{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.3em;color:#2a2520;margin-top:18px;text-align:center}
+    .gc-hint{font-family:'JetBrains Mono',monospace;font-size:9px;color:#4a443c;margin-top:10px;text-align:center;letter-spacing:.05em}
 
-    /* ============ LOADING ============ */
-    .loading-screen {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 12px; color: var(--text-dim);
-    }
-    .spinner {
-      width: 32px; height: 32px; border: 3px solid var(--border);
-      border-top-color: var(--accent); border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px;
-      letter-spacing: 0.2em; text-transform: uppercase;
-    }
-
-    /* ============ STATUS ============ */
-    .config-warning {
-      max-width: 500px; margin: 80px auto; padding: 32px 24px;
-      background: var(--surface); border: 1px solid var(--danger);
-      border-radius: 18px; color: var(--text);
-    }
-    .config-warning h2 {
-      font-family: 'Bebas Neue', sans-serif; font-size: 24px;
-      color: var(--danger); margin-bottom: 12px; letter-spacing: 0.05em;
-    }
-    .config-warning code {
-      display: block; padding: 12px; background: var(--surface-2);
-      border-radius: 8px; font-family: 'JetBrains Mono', monospace;
-      font-size: 12px; margin: 8px 0; color: var(--accent);
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-    .product.pulse { animation: pulse 0.4s ease; }
-
-    .hidden { display: none !important; }
-
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+    /* ============ MISC ============ */
+    .loading-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--text-dim)}
+    .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading-text{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+    .config-warning{max-width:500px;margin:80px auto;padding:32px 24px;background:var(--surface);border:1px solid var(--danger);border-radius:18px;color:var(--text)}
+    .config-warning h2{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--danger);margin-bottom:12px;letter-spacing:.05em}
+    .config-warning code{display:block;padding:12px;background:var(--surface-2);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;margin:8px 0;color:var(--accent)}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    .product.pulse{animation:pulse .4s ease}
+    .hidden{display:none!important}
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:100px}
   </style>
 </head>
 <body data-theme="obsidian">
 
-  <!-- ============ LOADING ============ -->
+  <!-- LOADING -->
   <div class="loading-screen" id="loadingScreen">
     <div class="spinner"></div>
     <div class="loading-text">Loading...</div>
   </div>
 
-  <!-- ============ CONFIG WARNING ============ -->
+  <!-- CONFIG WARNING -->
   <div class="config-warning hidden" id="configWarning">
     <h2>⚠️ ยังไม่ได้ตั้งค่า Supabase</h2>
-    <p style="margin-bottom: 16px; color: var(--text-dim); font-size: 13px;">
-      ต้องใส่ Supabase URL และ Anon Key ในไฟล์ <code>index.html</code> ก่อนใช้งาน
-    </p>
-    <p style="font-size: 12px; color: var(--text-dim);">เปิดดูคู่มือใน README.md</p>
+    <p style="margin-bottom:16px;color:var(--text-dim);font-size:13px">ต้องใส่ Supabase URL และ Anon Key ในไฟล์ index.html ก่อนใช้งาน</p>
   </div>
 
-  <!-- ============ LOGIN ============ -->
+  <!-- LOGIN -->
   <div class="login-screen hidden" id="loginScreen">
     <div class="login-card">
       <div class="login-logo">// MONTHLY</div>
       <div class="login-title">GRIND TRACKER</div>
       <div class="login-sub">ติดตามยอดขายต่อเดือน · ตั้งเป้า · ทำให้ถึง</div>
 
-      <!-- ── Sign In View ── -->
       <div id="loginFormView">
         <div class="login-form">
-          <input type="email" class="form-input" id="loginEmail"
-            placeholder="email@example.com" autocomplete="email">
-
+          <input type="email" class="form-input" id="loginEmail" placeholder="email@example.com" autocomplete="email">
           <div class="pw-wrap">
-            <input type="password" class="form-input" id="loginPassword"
-              placeholder="รหัสผ่าน" autocomplete="current-password" style="padding-right:44px">
+            <input type="password" class="form-input" id="loginPassword" placeholder="รหัสผ่าน" autocomplete="current-password" style="padding-right:44px">
             <button class="pw-toggle" id="toggleLoginPw" tabindex="-1">👁</button>
           </div>
-
           <div class="login-error hidden" id="loginError"></div>
-
           <button class="btn btn-primary" id="loginBtn">เข้าสู่ระบบ</button>
         </div>
-
-        <div class="login-footer">
-          <a href="#" id="forgotLink">ลืมรหัสผ่าน?</a>
-          &nbsp;·&nbsp;
-          ยังไม่มีบัญชี? <a href="#" id="switchToSignup">สมัครสมาชิก</a>
-        </div>
+        <div class="login-footer"><a href="#" id="forgotLink">ลืมรหัสผ่าน?</a> · ยังไม่มีบัญชี? <a href="#" id="switchToSignup">สมัครสมาชิก</a></div>
       </div>
 
-      <!-- ── Sign Up View ── -->
       <div id="signupFormView" class="hidden">
         <div class="login-form">
-          <input type="email" class="form-input" id="signupEmail"
-            placeholder="email@example.com" autocomplete="email">
-
+          <input type="email" class="form-input" id="signupEmail" placeholder="email@example.com" autocomplete="email">
           <div class="pw-wrap">
-            <input type="password" class="form-input" id="signupPassword"
-              placeholder="รหัสผ่าน (อย่างน้อย 6 ตัว)" autocomplete="new-password" style="padding-right:44px">
+            <input type="password" class="form-input" id="signupPassword" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัว)" autocomplete="new-password" style="padding-right:44px">
             <button class="pw-toggle" id="toggleSignupPw" tabindex="-1">👁</button>
           </div>
-
           <div class="pw-wrap">
-            <input type="password" class="form-input" id="signupConfirm"
-              placeholder="ยืนยันรหัสผ่าน" autocomplete="new-password" style="padding-right:44px">
+            <input type="password" class="form-input" id="signupConfirm" placeholder="ยืนยันรหัสผ่าน" autocomplete="new-password" style="padding-right:44px">
             <button class="pw-toggle" id="toggleConfirmPw" tabindex="-1">👁</button>
           </div>
-
           <div class="login-error hidden" id="signupError"></div>
-
           <button class="btn btn-primary" id="signupBtn">สมัครสมาชิก</button>
         </div>
-
-        <div class="login-footer">
-          มีบัญชีแล้ว? <a href="#" id="switchToLogin">เข้าสู่ระบบ</a>
-        </div>
+        <div class="login-footer">มีบัญชีแล้ว? <a href="#" id="switchToLogin">เข้าสู่ระบบ</a></div>
       </div>
 
-      <!-- ── Forgot Password View ── -->
       <div id="forgotFormView" class="hidden">
         <div class="login-form">
-          <input type="email" class="form-input" id="forgotEmail"
-            placeholder="email@example.com" autocomplete="email">
-
+          <input type="email" class="form-input" id="forgotEmail" placeholder="email@example.com">
           <div class="login-error hidden" id="forgotError"></div>
-
           <button class="btn btn-primary" id="forgotBtn">ส่งลิงก์รีเซ็ตรหัสผ่าน</button>
         </div>
-
-        <div class="login-footer">
-          <a href="#" id="backToLogin">← กลับหน้า Login</a>
-        </div>
+        <div class="login-footer"><a href="#" id="backToLogin">← กลับหน้า Login</a></div>
       </div>
 
-      <!-- ── Forgot Success View ── -->
       <div id="forgotSentView" class="hidden">
-        <div class="login-success">
-          ✓ ส่งลิงก์รีเซ็ตไปแล้ว<br>
-          <small style="opacity: 0.8">เช็ค inbox / spam แล้วคลิกลิงก์</small>
-        </div>
-        <div class="login-footer">
-          <a href="#" id="backToLoginFromForgot">← กลับหน้า Login</a>
-        </div>
+        <div class="login-success">✓ ส่งลิงก์รีเซ็ตไปแล้ว<br><small style="opacity:.8">เช็ค inbox / spam</small></div>
+        <div class="login-footer"><a href="#" id="backToLoginFromForgot">← กลับหน้า Login</a></div>
       </div>
 
-      <!-- ── Signup Success View ── -->
       <div id="signupSentView" class="hidden">
-        <div class="login-success">
-          ✓ สมัครสมาชิกสำเร็จ!<br>
-          <small style="opacity: 0.8">เช็ค inbox เพื่อยืนยัน email ก่อนเข้าสู่ระบบ</small>
-        </div>
-        <div class="login-footer">
-          <a href="#" id="backToLoginFromSignup">← กลับหน้า Login</a>
-        </div>
+        <div class="login-success">✓ สมัครสมาชิกสำเร็จ!<br><small style="opacity:.8">เช็ค inbox เพื่อยืนยัน email</small></div>
+        <div class="login-footer"><a href="#" id="backToLoginFromSignup">← กลับหน้า Login</a></div>
       </div>
-
     </div>
   </div>
 
-  <!-- ============ MAIN APP ============ -->
+  <!-- QUOTE TOAST -->
+  <div class="quote-toast hidden" id="quoteToast">
+    <div class="quote-inner">
+      <div class="quote-icon">✦</div>
+      <div class="quote-content">
+        <div class="quote-text" id="quoteText"></div>
+        <div class="quote-author" id="quoteAuthor"></div>
+      </div>
+      <button class="quote-close" id="quoteClose">×</button>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
   <div class="app hidden" id="appScreen">
     <header>
       <div class="brand">
@@ -616,40 +373,95 @@
         <div class="month-label" id="monthLabel">—</div>
       </div>
       <div class="header-actions">
+        <button class="icon-btn" id="shareBtn" title="Goal Card">◈</button>
         <button class="icon-btn" id="settingsBtn">⚙</button>
       </div>
     </header>
 
-    <section class="hero-stats">
-      <div class="hero-label">Total Revenue This Month</div>
-      <div class="hero-revenue">
-        <span class="currency">฿</span>
-        <span class="digits" id="totalRevenue">0</span>
+    <!-- GOALS HERO -->
+    <section class="goals-card" id="goalsCard">
+      <div class="goals-header">
+        <div>
+          <div class="goals-tag">// เป้าหมาย</div>
+          <div class="goals-headline" id="goalsHeadline">ตั้งเป้าหมายก่อนเลย →</div>
+        </div>
+        <button class="icon-btn" id="editGoalsBtn" style="flex-shrink:0">✎</button>
       </div>
-      <div class="hero-divider"></div>
-      <div class="hero-grid">
-        <div class="hero-grid-item">
-          <div class="hero-grid-label">Sales</div>
-          <div class="hero-grid-value" id="totalSales">0</div>
+
+      <div id="yearlyGoalRow" class="goal-row hidden">
+        <div class="goal-meta">
+          <span class="goal-label">ปีนี้</span>
+          <span class="goal-pct" id="yearlyPct">0%</span>
         </div>
-        <div class="hero-grid-item">
-          <div class="hero-grid-label">Goal</div>
-          <div class="hero-grid-value" id="totalGoal">0</div>
+        <div class="goal-bar-wrap"><div class="goal-bar" id="yearlyBar" style="width:0%"></div></div>
+        <div class="goal-detail" id="yearlyDetail">—</div>
+      </div>
+
+      <div class="goals-divider hidden" id="goalsDivider"></div>
+
+      <div id="monthlyGoalRow" class="goal-row hidden">
+        <div class="goal-meta">
+          <span class="goal-label">เดือนนี้</span>
+          <span class="goal-pct" id="monthlyPct">0%</span>
         </div>
-        <div class="hero-grid-item">
-          <div class="hero-grid-label">Progress</div>
-          <div class="hero-grid-value accent" id="totalProgress">0%</div>
-        </div>
+        <div class="goal-bar-wrap"><div class="goal-bar" id="monthlyBar" style="width:0%"></div></div>
+        <div class="goal-detail" id="monthlyDetail">—</div>
+      </div>
+
+      <div class="goals-setup hidden" id="goalsSetup">
+        <button class="btn btn-primary" id="goalsSetupBtn" style="margin-top:4px">ตั้งเป้าหมายเลย →</button>
       </div>
     </section>
 
+    <!-- PERIOD TABS -->
+    <div class="period-tabs" id="periodTabs">
+      <button class="period-tab" data-period="day">วันนี้</button>
+      <button class="period-tab" data-period="week">สัปดาห์</button>
+      <button class="period-tab active" data-period="month">เดือนนี้</button>
+      <button class="period-tab" data-period="year">ปีนี้</button>
+    </div>
+
+    <!-- CHART -->
+    <div class="chart-section">
+      <div class="chart-top">
+        <div class="chart-revenue" id="chartRevenue">฿0</div>
+        <div class="chart-sub">
+          <div class="chart-comparison hidden" id="chartComparison"></div>
+          <div class="chart-period-label" id="chartPeriodLabel"></div>
+        </div>
+      </div>
+      <div class="chart-container" id="chartArea">
+        <canvas id="salesChart"></canvas>
+        <div class="chart-empty hidden" id="chartEmpty">บันทึกยอดขายเพื่อดูกราฟ</div>
+      </div>
+    </div>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-card">
+        <div class="stat-val" id="statAvg">฿0</div>
+        <div class="stat-lbl">Avg/วัน</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val accent" id="statStreak">0</div>
+        <div class="stat-lbl">Streak 🔥</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statBest">฿0</div>
+        <div class="stat-lbl">Best Day</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="statProjected">฿0</div>
+        <div class="stat-lbl">คาดการณ์</div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
     <div class="section-header">
       <div class="section-title">// Products</div>
       <div class="section-count" id="productCount">0 items</div>
     </div>
-
     <div class="products-list" id="productsList"></div>
-
     <div class="empty hidden" id="emptyState">
       <div class="empty-icon">+</div>
       <div class="empty-text">ยังไม่มีสินค้า</div>
@@ -660,39 +472,34 @@
   </div>
 
   <!-- ============ MODALS ============ -->
+
+  <!-- Product Modal -->
   <div class="modal-backdrop hidden" id="productModal">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
       <div class="modal-title" id="productModalTitle">เพิ่มสินค้าใหม่</div>
       <div class="modal-subtitle">// Product Details</div>
-
       <div class="form-group">
         <label class="form-label">รูปภาพสินค้า (ไม่บังคับ)</label>
         <div class="form-image-upload" id="imageUpload">
-          <div class="upload-overlay">
-            <div class="form-image-icon">+</div>
-            <div class="form-image-text">Tap to upload</div>
-          </div>
+          <div class="upload-overlay"><div class="form-image-icon">+</div><div class="form-image-text">Tap to upload</div></div>
           <input type="file" id="imageInput" accept="image/*">
         </div>
       </div>
-
       <div class="form-group">
         <label class="form-label">ชื่อสินค้า</label>
         <input type="text" class="form-input" id="productName" placeholder="เช่น Course OMB" maxlength="60">
       </div>
-
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">ราคา (บาท)</label>
-          <input type="number" class="form-input" id="productPrice" placeholder="2990" min="0" step="1">
+          <input type="number" class="form-input" id="productPrice" placeholder="2990" min="0">
         </div>
         <div class="form-group">
           <label class="form-label">เป้าต่อเดือน</label>
-          <input type="number" class="form-input" id="productGoal" placeholder="30" min="1" step="1">
+          <input type="number" class="form-input" id="productGoal" placeholder="30" min="1">
         </div>
       </div>
-
       <div class="btn-row">
         <button class="btn btn-ghost" id="productCancel">ยกเลิก</button>
         <button class="btn btn-primary" id="productSave">บันทึก</button>
@@ -700,106 +507,48 @@
     </div>
   </div>
 
+  <!-- Settings Modal -->
   <div class="modal-backdrop hidden" id="settingsModal">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
       <div class="modal-title">SETTINGS</div>
       <div class="modal-subtitle">// Account &amp; Theme</div>
-
-      <div class="user-email" id="userEmailBox">
-        <strong>เข้าใช้งานในชื่อ</strong>
-        <span id="userEmail">—</span>
-      </div>
-
+      <div class="user-email"><strong>เข้าใช้งานในชื่อ</strong><span id="userEmail">—</span></div>
       <label class="form-label">เลือกธีม</label>
       <div class="theme-grid" id="themeGrid">
-        <div class="theme-card" data-t="obsidian">
-          <div class="theme-card-name">Obsidian</div>
-          <div class="theme-swatches">
-            <div class="swatch" style="background:#15120f"></div>
-            <div class="swatch" style="background:#d4a256"></div>
-            <div class="swatch" style="background:#f4efe6"></div>
-          </div>
-        </div>
-        <div class="theme-card" data-t="paper">
-          <div class="theme-card-name">Paper</div>
-          <div class="theme-swatches">
-            <div class="swatch" style="background:#ffffff;border:1px solid #ccc"></div>
-            <div class="swatch" style="background:#c0392b"></div>
-            <div class="swatch" style="background:#1a1816"></div>
-          </div>
-        </div>
-        <div class="theme-card" data-t="mint">
-          <div class="theme-card-name">Mint</div>
-          <div class="theme-swatches">
-            <div class="swatch" style="background:#112824"></div>
-            <div class="swatch" style="background:#5eead4"></div>
-            <div class="swatch" style="background:#e8f5ee"></div>
-          </div>
-        </div>
-        <div class="theme-card" data-t="coral">
-          <div class="theme-card-name">Coral</div>
-          <div class="theme-swatches">
-            <div class="swatch" style="background:#ffffff;border:1px solid #ccc"></div>
-            <div class="swatch" style="background:#ee5a3c"></div>
-            <div class="swatch" style="background:#2a1f18"></div>
-          </div>
-        </div>
-        <div class="theme-card" data-t="neon">
-          <div class="theme-card-name">Neon</div>
-          <div class="theme-swatches">
-            <div class="swatch" style="background:#0a0a0a"></div>
-            <div class="swatch" style="background:#00fff0"></div>
-            <div class="swatch" style="background:#ff00ff"></div>
-          </div>
-        </div>
+        <div class="theme-card" data-t="obsidian"><div class="theme-card-name">Obsidian</div><div class="theme-swatches"><div class="swatch" style="background:#15120f"></div><div class="swatch" style="background:#d4a256"></div><div class="swatch" style="background:#f4efe6"></div></div></div>
+        <div class="theme-card" data-t="paper"><div class="theme-card-name">Paper</div><div class="theme-swatches"><div class="swatch" style="background:#fff;border:1px solid #ccc"></div><div class="swatch" style="background:#c0392b"></div><div class="swatch" style="background:#1a1816"></div></div></div>
+        <div class="theme-card" data-t="mint"><div class="theme-card-name">Mint</div><div class="theme-swatches"><div class="swatch" style="background:#112824"></div><div class="swatch" style="background:#5eead4"></div><div class="swatch" style="background:#e8f5ee"></div></div></div>
+        <div class="theme-card" data-t="coral"><div class="theme-card-name">Coral</div><div class="theme-swatches"><div class="swatch" style="background:#fff;border:1px solid #ccc"></div><div class="swatch" style="background:#ee5a3c"></div><div class="swatch" style="background:#2a1f18"></div></div></div>
+        <div class="theme-card" data-t="neon"><div class="theme-card-name">Neon</div><div class="theme-swatches"><div class="swatch" style="background:#0a0a0a"></div><div class="swatch" style="background:#00fff0"></div><div class="swatch" style="background:#ff00ff"></div></div></div>
       </div>
-
       <div class="reset-section">
         <label class="form-label">เครื่องมือ</label>
         <div class="menu-options">
-          <button class="menu-option" id="resetMonthBtn">
-            <span class="menu-icon">↻</span>
-            <span>รีเซ็ตเดือนใหม่ (เริ่มยอดขายจาก 0)</span>
-          </button>
-          <button class="menu-option danger" id="logoutBtn">
-            <span class="menu-icon">⇲</span>
-            <span>ออกจากระบบ</span>
-          </button>
+          <button class="menu-option" id="resetMonthBtn"><span class="menu-icon">↻</span><span>รีเซ็ตเดือนใหม่ (เริ่มยอดขายจาก 0)</span></button>
+          <button class="menu-option danger" id="logoutBtn"><span class="menu-icon">⇲</span><span>ออกจากระบบ</span></button>
         </div>
       </div>
-
-      <div class="btn-row">
-        <button class="btn" id="settingsClose">ปิด</button>
-      </div>
+      <div class="btn-row"><button class="btn" id="settingsClose">ปิด</button></div>
     </div>
   </div>
 
+  <!-- Product Menu Modal -->
   <div class="modal-backdrop hidden" id="menuModal">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
       <div class="modal-title" id="menuProductName">—</div>
       <div class="modal-subtitle">// Actions</div>
       <div class="menu-options">
-        <button class="menu-option" id="menuEdit">
-          <span class="menu-icon">✎</span>
-          <span>แก้ไขรายละเอียด</span>
-        </button>
-        <button class="menu-option" id="menuAddBulk">
-          <span class="menu-icon">+5</span>
-          <span>เพิ่มยอดขายหลายชิ้น</span>
-        </button>
-        <button class="menu-option danger" id="menuDelete">
-          <span class="menu-icon">⨯</span>
-          <span>ลบสินค้านี้</span>
-        </button>
+        <button class="menu-option" id="menuEdit"><span class="menu-icon">✎</span><span>แก้ไขรายละเอียด</span></button>
+        <button class="menu-option" id="menuAddBulk"><span class="menu-icon">+5</span><span>เพิ่มยอดขายหลายชิ้น</span></button>
+        <button class="menu-option danger" id="menuDelete"><span class="menu-icon">⨯</span><span>ลบสินค้านี้</span></button>
       </div>
-      <div class="btn-row">
-        <button class="btn" id="menuClose">ปิด</button>
-      </div>
+      <div class="btn-row"><button class="btn" id="menuClose">ปิด</button></div>
     </div>
   </div>
 
+  <!-- Confirm Modal -->
   <div class="modal-backdrop hidden" id="confirmModal">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
@@ -812,6 +561,7 @@
     </div>
   </div>
 
+  <!-- Bulk Add Modal -->
   <div class="modal-backdrop hidden" id="bulkModal">
     <div class="modal" onclick="event.stopPropagation()">
       <div class="modal-handle"></div>
@@ -819,7 +569,7 @@
       <div class="modal-subtitle">// Bulk Add</div>
       <div class="form-group">
         <label class="form-label">จำนวน</label>
-        <input type="number" class="form-input" id="bulkAmount" placeholder="5" min="1" step="1">
+        <input type="number" class="form-input" id="bulkAmount" placeholder="5" min="1">
       </div>
       <div class="btn-row">
         <button class="btn btn-ghost" id="bulkCancel">ยกเลิก</button>
@@ -828,295 +578,232 @@
     </div>
   </div>
 
+  <!-- Goals Edit Modal -->
+  <div class="modal-backdrop hidden" id="goalsModal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-handle"></div>
+      <div class="modal-title">ตั้งเป้าหมาย</div>
+      <div class="modal-subtitle">// Goals Setup</div>
+      <div class="form-group">
+        <label class="form-label">เป้ารายได้เดือนนี้ (฿)</label>
+        <input type="number" class="form-input" id="monthlyGoalInput" placeholder="100000" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">เป้ารายได้ปีนี้ (฿)</label>
+        <input type="number" class="form-input" id="yearlyGoalInput" placeholder="1000000" min="0">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="goalsCancel">ยกเลิก</button>
+        <button class="btn btn-primary" id="goalsSaveBtn">บันทึก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Goal Card (Shareable) -->
+  <div class="modal-backdrop hidden" id="goalCardModal" onclick="closeAllModals()">
+    <div class="goal-card" onclick="event.stopPropagation()">
+      <button class="gc-close" id="gcClose">×</button>
+      <div class="gc-logo">// Monthly</div>
+      <div class="gc-title">GRIND<br>TRACKER</div>
+      <div class="gc-divider"></div>
+      <div class="gc-goal" id="gcYearlySection">
+        <div class="gc-goal-lbl">เป้าปีนี้</div>
+        <div class="gc-goal-amount" id="gcYearlyAmt">฿0</div>
+        <div class="gc-bar-wrap"><div class="gc-bar-fill" id="gcYearlyFill" style="width:0%"></div></div>
+        <div class="gc-pct" id="gcYearlyPct">0%</div>
+      </div>
+      <div class="gc-goal" id="gcMonthlySection">
+        <div class="gc-goal-lbl">เป้าเดือนนี้</div>
+        <div class="gc-goal-amount" id="gcMonthlyAmt">฿0</div>
+        <div class="gc-bar-wrap"><div class="gc-bar-fill" id="gcMonthlyFill" style="width:0%"></div></div>
+        <div class="gc-pct" id="gcMonthlyPct">0%</div>
+      </div>
+      <div class="gc-divider"></div>
+      <div class="gc-footer">
+        <span id="gcMonth">—</span>
+        <span id="gcDaysLeft">—</span>
+      </div>
+      <div class="gc-brand">GRIND TRACKER</div>
+      <div class="gc-hint">📱 Screenshot แล้วโพสต์ IG / TikTok</div>
+    </div>
+  </div>
+
   <script>
     // ============================================
-    // ⚙️ CONFIG — แก้ 2 บรรทัดนี้หลังสร้าง Supabase project
+    // CONFIG
     // ============================================
     const SUPABASE_URL = 'https://ojblscuqatthmkhtgfgc.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qYmxzY3VxYXR0aG1raHRnZmdjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzNTc1MTcsImV4cCI6MjA5MzkzMzUxN30.yI1l7JEwnNxjkIkDf-1HmzKy-Ag1ZEV3QCkoKuubOF0';
 
     // ============================================
-    // INIT
+    // STATE
     // ============================================
-    let sb = null;
-    let user = null;
-    let state = { products: [], theme: 'obsidian', month: getCurrentMonth() };
-    let editingProductId = null;
-    let menuProductId = null;
-    let pendingConfirm = null;
-    let pendingImage = null;
+    let sb = null, user = null, chartInstance = null;
+    let touchStartX = 0;
+    let state = {
+      products: [],
+      theme: 'obsidian',
+      month: getCurrentMonth(),
+      period: 'month',
+      goals: { monthly: 0, yearly: 0 },
+      saleLogs: [],
+    };
+    let editingProductId = null, menuProductId = null, pendingConfirm = null, pendingImage = null;
 
+    // ============================================
+    // UTILS
+    // ============================================
     function getCurrentMonth() {
       const d = new Date();
-      const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-      return `${months[d.getMonth()]} ${d.getFullYear()}`;
+      const m = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      return `${m[d.getMonth()]} ${d.getFullYear()}`;
     }
-
+    function formatNumber(n) { return Math.round(n).toLocaleString('en-US'); }
+    function formatK(n) { return n >= 1000 ? '฿' + (n/1000).toFixed(0) + 'k' : '฿' + n; }
+    function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+    function isSameDay(a, b) {
+      return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+    }
+    function startOfDay(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime(); }
+    function daysLeftInMonth() {
+      const n = new Date();
+      return new Date(n.getFullYear(), n.getMonth()+1, 0).getDate() - n.getDate();
+    }
     function isConfigured() {
       return SUPABASE_URL && SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' &&
              SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY_HERE';
     }
-
-    // ── แสดง/ซ่อน views ใน login card ──
-    function showLoginView(viewId) {
-      ['loginFormView','signupFormView','forgotFormView','forgotSentView','signupSentView']
-        .forEach(id => document.getElementById(id).classList.toggle('hidden', id !== viewId));
+    function getAccentColor() {
+      return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    }
+    function hexToRgba(hex, a) {
+      const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+      if (!r) return `rgba(212,162,86,${a})`;
+      return `rgba(${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)},${a})`;
     }
 
+    // ============================================
+    // SCREENS
+    // ============================================
     function showScreen(id) {
-      ['loadingScreen','configWarning','loginScreen','appScreen'].forEach(s => {
-        document.getElementById(s).classList.toggle('hidden', s !== id);
-      });
+      ['loadingScreen','configWarning','loginScreen','appScreen'].forEach(s =>
+        document.getElementById(s).classList.toggle('hidden', s !== id)
+      );
+    }
+    function showLoginView(id) {
+      ['loginFormView','signupFormView','forgotFormView','forgotSentView','signupSentView'].forEach(v =>
+        document.getElementById(v).classList.toggle('hidden', v !== id)
+      );
     }
 
+    // ============================================
+    // INIT
+    // ============================================
     async function init() {
-      if (!isConfigured()) {
-        showScreen('configWarning');
-        return;
-      }
-
+      if (!isConfigured()) { showScreen('configWarning'); return; }
       sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-      // Listen to auth changes
       sb.auth.onAuthStateChange((event, session) => {
-        if (session && session.user) {
-          user = session.user;
-          enterApp();
-        } else {
-          user = null;
-          showScreen('loginScreen');
-          showLoginView('loginFormView');
-        }
+        if (session?.user) { user = session.user; enterApp(); }
+        else { user = null; showScreen('loginScreen'); showLoginView('loginFormView'); }
       });
-
-      // Initial check
       const { data: { session } } = await sb.auth.getSession();
-      if (session && session.user) {
-        user = session.user;
-        await enterApp();
-      } else {
-        showScreen('loginScreen');
-        showLoginView('loginFormView');
-      }
+      if (session?.user) { user = session.user; await enterApp(); }
+      else { showScreen('loginScreen'); showLoginView('loginFormView'); }
     }
 
     async function enterApp() {
       showScreen('loadingScreen');
-      await loadData();
+      await Promise.all([loadData(), loadGoals(), loadSaleLogs()]);
       document.getElementById('userEmail').textContent = user.email || '—';
       showScreen('appScreen');
       render();
+      loadDailyQuote(); // non-blocking
     }
 
     // ============================================
-    // AUTH — Email + Password
+    // AUTH
     // ============================================
-
-    // ── Sign In ──
     async function signIn() {
-      const email    = document.getElementById('loginEmail').value.trim();
+      const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-      const errEl    = document.getElementById('loginError');
+      const errEl = document.getElementById('loginError');
       errEl.classList.add('hidden');
-
-      if (!email || !email.includes('@')) {
-        errEl.textContent = 'กรอกอีเมลให้ถูกต้อง';
-        errEl.classList.remove('hidden');
-        return;
-      }
-      if (!password) {
-        errEl.textContent = 'กรอกรหัสผ่านด้วย';
-        errEl.classList.remove('hidden');
-        return;
-      }
-
+      if (!email.includes('@')) { errEl.textContent = 'กรอกอีเมลให้ถูกต้อง'; errEl.classList.remove('hidden'); return; }
+      if (!password) { errEl.textContent = 'กรอกรหัสผ่านด้วย'; errEl.classList.remove('hidden'); return; }
       const btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.textContent = 'กำลังเข้าสู่ระบบ...';
-
+      btn.disabled = true; btn.textContent = 'กำลังเข้าสู่ระบบ...';
       const { error } = await sb.auth.signInWithPassword({ email, password });
-
-      btn.disabled = false;
-      btn.textContent = 'เข้าสู่ระบบ';
-
+      btn.disabled = false; btn.textContent = 'เข้าสู่ระบบ';
       if (error) {
-        const msg = error.message.includes('Invalid login credentials')
-          ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'
-          : error.message.includes('Email not confirmed')
-          ? 'ยังไม่ได้ยืนยัน email — เช็ค inbox แล้วคลิกลิงก์ก่อน'
-          : error.message;
-        errEl.textContent = msg;
+        errEl.textContent = error.message.includes('Invalid') ? 'อีเมลหรือรหัสผ่านไม่ถูกต้อง' :
+          error.message.includes('not confirmed') ? 'ยังไม่ได้ยืนยัน email — เช็ค inbox ก่อน' : error.message;
         errEl.classList.remove('hidden');
       }
-      // ถ้า success → onAuthStateChange จะ handle เอง
     }
 
-    // ── Sign Up ──
     async function signUp() {
-      const email    = document.getElementById('signupEmail').value.trim();
-      const password = document.getElementById('signupPassword').value;
-      const confirm  = document.getElementById('signupConfirm').value;
-      const errEl    = document.getElementById('signupError');
+      const email = document.getElementById('signupEmail').value.trim();
+      const pw = document.getElementById('signupPassword').value;
+      const cf = document.getElementById('signupConfirm').value;
+      const errEl = document.getElementById('signupError');
       errEl.classList.add('hidden');
-
-      if (!email || !email.includes('@')) {
-        errEl.textContent = 'กรอกอีเมลให้ถูกต้อง';
-        errEl.classList.remove('hidden');
-        return;
-      }
-      if (password.length < 6) {
-        errEl.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
-        errEl.classList.remove('hidden');
-        return;
-      }
-      if (password !== confirm) {
-        errEl.textContent = 'รหัสผ่านไม่ตรงกัน';
-        errEl.classList.remove('hidden');
-        return;
-      }
-
+      if (!email.includes('@')) { errEl.textContent = 'กรอกอีเมลให้ถูกต้อง'; errEl.classList.remove('hidden'); return; }
+      if (pw.length < 6) { errEl.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัว'; errEl.classList.remove('hidden'); return; }
+      if (pw !== cf) { errEl.textContent = 'รหัสผ่านไม่ตรงกัน'; errEl.classList.remove('hidden'); return; }
       const btn = document.getElementById('signupBtn');
-      btn.disabled = true;
-      btn.textContent = 'กำลังสมัคร...';
-
-      const { data, error } = await sb.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: window.location.href.split('#')[0].split('?')[0] }
-      });
-
-      btn.disabled = false;
-      btn.textContent = 'สมัครสมาชิก';
-
-      if (error) {
-        const msg = error.message.includes('already registered')
-          ? 'อีเมลนี้มีบัญชีอยู่แล้ว — ลองเข้าสู่ระบบแทน'
-          : error.message;
-        errEl.textContent = msg;
-        errEl.classList.remove('hidden');
-        return;
-      }
-
-      // ถ้า Supabase ปิด email confirmation → session จะมาทันที
-      if (data.session) {
-        // onAuthStateChange จะ handle เอง
-      } else {
-        // ต้อง confirm email ก่อน
-        showLoginView('signupSentView');
-      }
+      btn.disabled = true; btn.textContent = 'กำลังสมัคร...';
+      const { data, error } = await sb.auth.signUp({ email, password: pw, options: { emailRedirectTo: location.href.split('#')[0].split('?')[0] } });
+      btn.disabled = false; btn.textContent = 'สมัครสมาชิก';
+      if (error) { errEl.textContent = error.message.includes('already') ? 'อีเมลนี้มีบัญชีอยู่แล้ว' : error.message; errEl.classList.remove('hidden'); return; }
+      if (!data.session) showLoginView('signupSentView');
     }
 
-    // ── Forgot Password ──
     async function sendResetEmail() {
       const email = document.getElementById('forgotEmail').value.trim();
       const errEl = document.getElementById('forgotError');
       errEl.classList.add('hidden');
-
-      if (!email || !email.includes('@')) {
-        errEl.textContent = 'กรอกอีเมลให้ถูกต้อง';
-        errEl.classList.remove('hidden');
-        return;
-      }
-
+      if (!email.includes('@')) { errEl.textContent = 'กรอกอีเมลให้ถูกต้อง'; errEl.classList.remove('hidden'); return; }
       const btn = document.getElementById('forgotBtn');
-      btn.disabled = true;
-      btn.textContent = 'กำลังส่ง...';
-
-      const { error } = await sb.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.href.split('#')[0].split('?')[0]
-      });
-
-      btn.disabled = false;
-      btn.textContent = 'ส่งลิงก์รีเซ็ตรหัสผ่าน';
-
-      if (error) {
-        errEl.textContent = error.message;
-        errEl.classList.remove('hidden');
-        return;
-      }
+      btn.disabled = true; btn.textContent = 'กำลังส่ง...';
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.href.split('#')[0].split('?')[0] });
+      btn.disabled = false; btn.textContent = 'ส่งลิงก์รีเซ็ตรหัสผ่าน';
+      if (error) { errEl.textContent = error.message; errEl.classList.remove('hidden'); return; }
       showLoginView('forgotSentView');
     }
 
-    async function logout() {
-      await sb.auth.signOut();
-    }
-
-    // ── Toggle show/hide password ──
-    function togglePw(inputId) {
-      const input = document.getElementById(inputId);
-      input.type = input.type === 'password' ? 'text' : 'password';
-    }
+    async function logout() { await sb.auth.signOut(); }
+    function togglePw(id) { const el = document.getElementById(id); el.type = el.type === 'password' ? 'text' : 'password'; }
 
     // ============================================
-    // DATA
+    // DATA — Core
     // ============================================
     async function loadData() {
-      const { data: prefs } = await sb
-        .from('user_preferences')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (prefs) {
-        state.theme = prefs.theme || 'obsidian';
-        state.month = prefs.current_month || getCurrentMonth();
-      }
-
-      const { data: products, error } = await sb
-        .from('products')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
-
-      if (error) {
-        console.error(error);
-        alert('โหลดข้อมูลไม่สำเร็จ: ' + error.message);
-        return;
-      }
-
-      state.products = (products || []).map(p => ({
-        id: p.id,
-        name: p.name,
-        price: p.price,
-        goal: p.goal,
-        sold: p.sold,
-        image: p.image_data
-      }));
+      const { data: prefs } = await sb.from('user_preferences').select('*').eq('user_id', user.id).maybeSingle();
+      if (prefs) { state.theme = prefs.theme || 'obsidian'; state.month = prefs.current_month || getCurrentMonth(); }
+      const { data: products, error } = await sb.from('products').select('*').eq('user_id', user.id).order('created_at', { ascending: true });
+      if (error) { alert('โหลดข้อมูลไม่สำเร็จ: ' + error.message); return; }
+      state.products = (products || []).map(p => ({ id: p.id, name: p.name, price: p.price, goal: p.goal, sold: p.sold, image: p.image_data }));
     }
 
     async function savePreferences() {
-      await sb.from('user_preferences').upsert({
-        user_id: user.id,
-        theme: state.theme,
-        current_month: state.month,
-        updated_at: new Date().toISOString()
-      });
+      await sb.from('user_preferences').upsert({ user_id: user.id, theme: state.theme, current_month: state.month, updated_at: new Date().toISOString() });
     }
 
     async function dbInsertProduct(p) {
-      const { data, error } = await sb.from('products').insert({
-        user_id: user.id,
-        name: p.name,
-        price: p.price,
-        goal: p.goal,
-        sold: p.sold,
-        image_data: p.image
-      }).select().single();
-
+      const { data, error } = await sb.from('products').insert({ user_id: user.id, name: p.name, price: p.price, goal: p.goal, sold: p.sold, image_data: p.image }).select().single();
       if (error) { alert('บันทึกไม่สำเร็จ: ' + error.message); return null; }
       return data.id;
     }
 
     async function dbUpdateProduct(id, updates) {
-      const dbUpdates = {};
-      if ('name' in updates) dbUpdates.name = updates.name;
-      if ('price' in updates) dbUpdates.price = updates.price;
-      if ('goal' in updates) dbUpdates.goal = updates.goal;
-      if ('sold' in updates) dbUpdates.sold = updates.sold;
-      if ('image' in updates) dbUpdates.image_data = updates.image;
-      dbUpdates.updated_at = new Date().toISOString();
-
-      const { error } = await sb.from('products').update(dbUpdates).eq('id', id);
+      const u = {};
+      if ('name' in updates) u.name = updates.name;
+      if ('price' in updates) u.price = updates.price;
+      if ('goal' in updates) u.goal = updates.goal;
+      if ('sold' in updates) u.sold = updates.sold;
+      if ('image' in updates) u.image_data = updates.image;
+      u.updated_at = new Date().toISOString();
+      const { error } = await sb.from('products').update(u).eq('id', id);
       if (error) alert('อัพเดทไม่สำเร็จ: ' + error.message);
     }
 
@@ -1126,70 +813,337 @@
     }
 
     // ============================================
-    // IMAGE COMPRESSION
+    // DATA — Sale Logs
     // ============================================
-    function compressImage(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = e => {
-          const img = new Image();
-          img.onload = () => {
-            const MAX = 240;
-            let w = img.width, h = img.height;
-            if (w > h) {
-              if (w > MAX) { h = h * MAX / w; w = MAX; }
-            } else {
-              if (h > MAX) { w = w * MAX / h; h = MAX; }
-            }
-            const canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            resolve(canvas.toDataURL('image/jpeg', 0.7));
-          };
-          img.onerror = reject;
-          img.src = e.target.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+    async function loadSaleLogs() {
+      const yearStart = `${new Date().getFullYear()}-01-01`;
+      const { data, error } = await sb.from('sale_logs').select('*').eq('user_id', user.id).gte('logged_at', yearStart).order('logged_at', { ascending: true });
+      if (!error) state.saleLogs = data || [];
+    }
+
+    async function logSale(product, quantity) {
+      const revenue = product.price * quantity;
+      const row = { user_id: user.id, product_id: product.id, product_name: product.name, quantity, unit_price: product.price, revenue, logged_at: new Date().toISOString() };
+      const { data, error } = await sb.from('sale_logs').insert(row).select().single();
+      if (!error && data) {
+        state.saleLogs.push(data);
+        renderGoalsCard();
+        renderStatsStrip();
+        updateChart();
+      }
+    }
+
+    // ============================================
+    // DATA — Goals
+    // ============================================
+    async function loadGoals() {
+      const { data } = await sb.from('goals').select('*').eq('user_id', user.id).maybeSingle();
+      if (data) state.goals = { monthly: data.monthly_revenue || 0, yearly: data.yearly_revenue || 0 };
+    }
+
+    async function saveGoals(monthly, yearly) {
+      state.goals = { monthly, yearly };
+      await sb.from('goals').upsert({ user_id: user.id, monthly_revenue: monthly, yearly_revenue: yearly, updated_at: new Date().toISOString() });
+      renderGoalsCard();
+    }
+
+    // ============================================
+    // DATA — Daily Quote
+    // ============================================
+    async function loadDailyQuote() {
+      const today = new Date().toDateString();
+      if (localStorage.getItem('lastQuoteDate') === today) return;
+      const { count } = await sb.from('daily_quotes').select('*', { count: 'exact', head: true }).eq('is_active', true);
+      if (!count) return;
+      const offset = Math.floor(Math.random() * count);
+      const { data } = await sb.from('daily_quotes').select('*').eq('is_active', true).range(offset, offset);
+      if (data?.[0]) { localStorage.setItem('lastQuoteDate', today); showQuoteToast(data[0]); }
+    }
+
+    function showQuoteToast(q) {
+      document.getElementById('quoteText').textContent = `"${q.quote_text}"`;
+      document.getElementById('quoteAuthor').textContent = q.author ? `— ${q.author}` : '';
+      const toast = document.getElementById('quoteToast');
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 8000);
+    }
+
+    // ============================================
+    // COMPUTED STATS
+    // ============================================
+    function getMonthlyRevenue() {
+      return state.products.reduce((s, p) => s + (p.sold * p.price), 0);
+    }
+
+    function getYearlyRevenue() {
+      const year = new Date().getFullYear();
+      return state.saleLogs.filter(l => new Date(l.logged_at).getFullYear() === year && l.quantity > 0).reduce((s, l) => s + l.revenue, 0);
+    }
+
+    function computeStreak() {
+      const salesDays = new Set();
+      state.saleLogs.forEach(l => { if (l.quantity > 0) salesDays.add(startOfDay(new Date(l.logged_at))); });
+      if (!salesDays.size) return 0;
+      const today = startOfDay(new Date());
+      const yesterday = today - 86400000;
+      let start = salesDays.has(today) ? today : salesDays.has(yesterday) ? yesterday : null;
+      if (!start) return 0;
+      let streak = 0, check = start;
+      while (salesDays.has(check)) { streak++; check -= 86400000; }
+      return streak;
+    }
+
+    function computeBestDay() {
+      const map = {};
+      state.saleLogs.forEach(l => {
+        if (l.quantity > 0) {
+          const k = startOfDay(new Date(l.logged_at));
+          map[k] = (map[k] || 0) + l.revenue;
+        }
       });
+      return Object.values(map).length ? Math.max(...Object.values(map)) : 0;
+    }
+
+    function computeAvgPerDay() {
+      const d = new Date().getDate();
+      return d > 0 ? Math.round(getMonthlyRevenue() / d) : 0;
+    }
+
+    function computeProjected() {
+      const n = new Date();
+      const d = n.getDate();
+      const last = new Date(n.getFullYear(), n.getMonth()+1, 0).getDate();
+      return d > 0 ? Math.round((getMonthlyRevenue() / d) * last) : 0;
+    }
+
+    // ============================================
+    // CHART
+    // ============================================
+    function getChartData(period) {
+      const now = new Date();
+      let labels = [], data = [], total = 0;
+
+      if (period === 'day') {
+        labels = Array.from({length:24}, (_,i) => `${i}`.padStart(2,'0'));
+        data = new Array(24).fill(0);
+        state.saleLogs.forEach(l => {
+          if (l.quantity > 0 && isSameDay(new Date(l.logged_at), now))
+            data[new Date(l.logged_at).getHours()] += l.revenue;
+        });
+        total = data.reduce((a,b) => a+b, 0);
+      } else if (period === 'week') {
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(now); d.setDate(d.getDate()-i);
+          labels.push(['อา','จ','อ','พ','พฤ','ศ','ส'][d.getDay()]);
+          const rev = state.saleLogs.filter(l => l.quantity > 0 && isSameDay(new Date(l.logged_at), d)).reduce((s,l) => s+l.revenue, 0);
+          data.push(rev); total += rev;
+        }
+      } else if (period === 'month') {
+        const days = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+        labels = Array.from({length:days}, (_,i) => String(i+1));
+        data = new Array(days).fill(0);
+        state.saleLogs.forEach(l => {
+          if (l.quantity > 0) {
+            const d = new Date(l.logged_at);
+            if (d.getMonth()===now.getMonth() && d.getFullYear()===now.getFullYear())
+              data[d.getDate()-1] += l.revenue;
+          }
+        });
+        total = data.reduce((a,b) => a+b, 0);
+        // fallback: use products.sold if no logs yet
+        if (total === 0) total = getMonthlyRevenue();
+      } else if (period === 'year') {
+        labels = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+        data = new Array(12).fill(0);
+        state.saleLogs.forEach(l => {
+          if (l.quantity > 0 && new Date(l.logged_at).getFullYear()===now.getFullYear())
+            data[new Date(l.logged_at).getMonth()] += l.revenue;
+        });
+        total = data.reduce((a,b) => a+b, 0);
+      }
+      return { labels, data, total };
+    }
+
+    function getPeriodLabel(period) {
+      const n = new Date();
+      if (period==='day') return `${n.getDate()} ${['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][n.getMonth()]}`;
+      if (period==='week') return 'Last 7 days';
+      if (period==='month') return state.month;
+      if (period==='year') return String(n.getFullYear());
+      return '';
+    }
+
+    function destroyChart() {
+      if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+    }
+
+    function initOrUpdateChart() {
+      const canvas = document.getElementById('salesChart');
+      if (!canvas) return;
+      const { labels, data, total } = getChartData(state.period);
+      const isEmpty = data.every(v => v === 0);
+      document.getElementById('chartEmpty').classList.toggle('hidden', !isEmpty);
+      document.getElementById('chartRevenue').textContent = '฿' + formatNumber(total);
+      document.getElementById('chartPeriodLabel').textContent = getPeriodLabel(state.period);
+      if (isEmpty && !chartInstance) return;
+      const accent = getAccentColor();
+      if (chartInstance) {
+        chartInstance.data.labels = labels;
+        chartInstance.data.datasets[0].data = data;
+        chartInstance.data.datasets[0].borderColor = accent;
+        chartInstance.data.datasets[0].backgroundColor = hexToRgba(accent, 0.12);
+        chartInstance.data.datasets[0].pointHoverBackgroundColor = accent;
+        chartInstance.update('active');
+        return;
+      }
+      chartInstance = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            data,
+            borderColor: accent,
+            backgroundColor: hexToRgba(accent, 0.12),
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: accent,
+            pointHoverBorderColor: '#fff',
+            pointHoverBorderWidth: 2,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 500, easing: 'easeInOutQuart' },
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#15120f',
+              borderColor: '#2a2520',
+              borderWidth: 1,
+              titleColor: '#8a8174',
+              bodyColor: '#f4efe6',
+              titleFont: { family: 'JetBrains Mono', size: 10 },
+              bodyFont: { family: 'Bebas Neue', size: 16 },
+              padding: 12,
+              callbacks: { label: ctx => '  ฿' + formatNumber(ctx.raw) }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: { color: '#4a443c', font: { family: 'JetBrains Mono', size: 9 }, maxRotation: 0, maxTicksLimit: 7 }
+            },
+            y: {
+              grid: { color: 'rgba(255,255,255,0.04)' },
+              border: { display: false },
+              ticks: { color: '#4a443c', font: { family: 'JetBrains Mono', size: 9 }, callback: v => formatK(v), maxTicksLimit: 4 }
+            }
+          }
+        }
+      });
+    }
+
+    function updateChart() {
+      if (chartInstance) initOrUpdateChart();
+    }
+
+    function switchPeriod(period) {
+      state.period = period;
+      document.querySelectorAll('.period-tab').forEach(t => t.classList.toggle('active', t.dataset.period === period));
+      destroyChart();
+      requestAnimationFrame(() => initOrUpdateChart());
     }
 
     // ============================================
     // RENDER
     // ============================================
-    function formatNumber(n) { return n.toLocaleString('en-US'); }
-
     function render() {
       document.documentElement.setAttribute('data-theme', state.theme);
       document.getElementById('monthLabel').textContent = state.month;
-
-      const totalRevenue = state.products.reduce((s, p) => s + (p.sold * p.price), 0);
-      const totalSales = state.products.reduce((s, p) => s + p.sold, 0);
-      const totalGoal = state.products.reduce((s, p) => s + p.goal, 0);
-      const progress = totalGoal > 0 ? Math.round((totalSales / totalGoal) * 100) : 0;
-
-      document.getElementById('totalRevenue').textContent = formatNumber(totalRevenue);
-      document.getElementById('totalSales').textContent = totalSales;
-      document.getElementById('totalGoal').textContent = totalGoal;
-      document.getElementById('totalProgress').textContent = progress + '%';
+      renderGoalsCard();
+      renderStatsStrip();
+      requestAnimationFrame(() => initOrUpdateChart());
       document.getElementById('productCount').textContent =
         `${state.products.length} item${state.products.length !== 1 ? 's' : ''}`;
-
       const list = document.getElementById('productsList');
       const empty = document.getElementById('emptyState');
+      if (state.products.length === 0) { list.innerHTML = ''; empty.classList.remove('hidden'); }
+      else { empty.classList.add('hidden'); list.innerHTML = state.products.map(renderProductCard).join(''); attachProductHandlers(); }
+      document.querySelectorAll('.theme-card').forEach(c => c.classList.toggle('active', c.dataset.t === state.theme));
+    }
 
-      if (state.products.length === 0) {
-        list.innerHTML = '';
-        empty.classList.remove('hidden');
-      } else {
-        empty.classList.add('hidden');
-        list.innerHTML = state.products.map(renderProductCard).join('');
-        attachProductHandlers();
+    function renderGoalsCard() {
+      const { monthly, yearly } = state.goals;
+      const monthlyRev = getMonthlyRevenue();
+      const yearlyRev = getYearlyRevenue();
+      const hasGoals = monthly > 0 || yearly > 0;
+
+      document.getElementById('goalsSetup').classList.toggle('hidden', hasGoals);
+
+      if (!hasGoals) {
+        document.getElementById('goalsHeadline').textContent = 'ตั้งเป้าหมายก่อนเลย →';
+        document.getElementById('yearlyGoalRow').classList.add('hidden');
+        document.getElementById('monthlyGoalRow').classList.add('hidden');
+        document.getElementById('goalsDivider').classList.add('hidden');
+        return;
       }
 
-      document.querySelectorAll('.theme-card').forEach(c => {
-        c.classList.toggle('active', c.dataset.t === state.theme);
-      });
+      const showBoth = yearly > 0 && monthly > 0;
+      document.getElementById('goalsDivider').classList.toggle('hidden', !showBoth);
+
+      if (yearly > 0) {
+        document.getElementById('yearlyGoalRow').classList.remove('hidden');
+        const pct = Math.min(200, Math.round((yearlyRev / yearly) * 100));
+        const over = yearlyRev > yearly;
+        document.getElementById('yearlyPct').textContent = pct + '%';
+        document.getElementById('yearlyPct').className = 'goal-pct' + (over ? ' over' : '');
+        document.getElementById('yearlyBar').style.width = Math.min(100, pct) + '%';
+        document.getElementById('yearlyBar').className = 'goal-bar' + (over ? ' over' : '');
+        const left = yearly - yearlyRev;
+        document.getElementById('yearlyDetail').innerHTML = over
+          ? `<span class="hl">฿${formatNumber(yearlyRev)}</span> <span class="ok">เกินเป้า! +฿${formatNumber(-left)}</span>`
+          : `<span class="hl">฿${formatNumber(yearlyRev)}</span> / ฿${formatNumber(yearly)} · <span>เหลือ <span class="hl">฿${formatNumber(left)}</span></span>`;
+        document.getElementById('goalsHeadline').textContent = `GRIND TO ฿${formatNumber(yearly)}`;
+      } else {
+        document.getElementById('yearlyGoalRow').classList.add('hidden');
+      }
+
+      if (monthly > 0) {
+        document.getElementById('monthlyGoalRow').classList.remove('hidden');
+        const pct = Math.min(200, Math.round((monthlyRev / monthly) * 100));
+        const over = monthlyRev > monthly;
+        const proj = computeProjected();
+        const left = monthly - monthlyRev;
+        const dLeft = daysLeftInMonth();
+        document.getElementById('monthlyPct').textContent = pct + '%';
+        document.getElementById('monthlyPct').className = 'goal-pct' + (over ? ' over' : '');
+        document.getElementById('monthlyBar').style.width = Math.min(100, pct) + '%';
+        document.getElementById('monthlyBar').className = 'goal-bar' + (over ? ' over' : '');
+        const projClass = proj >= monthly ? 'ok' : 'warn';
+        document.getElementById('monthlyDetail').innerHTML = over
+          ? `<span class="hl">฿${formatNumber(monthlyRev)}</span> <span class="ok">เกินเป้า! +฿${formatNumber(-left)}</span>`
+          : `<span class="hl">฿${formatNumber(monthlyRev)}</span> / ฿${formatNumber(monthly)} · เหลือ <span class="hl">฿${formatNumber(left)}</span> · ${dLeft} วัน · คาดการณ์ <span class="${projClass}">฿${formatNumber(proj)}</span>`;
+        if (yearly === 0) document.getElementById('goalsHeadline').textContent = `GRIND TO ฿${formatNumber(monthly)}`;
+      } else {
+        document.getElementById('monthlyGoalRow').classList.add('hidden');
+      }
+    }
+
+    function renderStatsStrip() {
+      const avg = computeAvgPerDay();
+      const streak = computeStreak();
+      const best = computeBestDay();
+      const proj = computeProjected();
+      document.getElementById('statAvg').textContent = avg >= 1000 ? '฿' + (avg/1000).toFixed(1) + 'k' : '฿' + avg;
+      document.getElementById('statStreak').textContent = streak;
+      document.getElementById('statBest').textContent = best >= 1000 ? '฿' + (best/1000).toFixed(1) + 'k' : '฿' + best;
+      document.getElementById('statProjected').textContent = proj >= 1000 ? '฿' + (proj/1000).toFixed(0) + 'k' : '฿' + proj;
     }
 
     function renderProductCard(p) {
@@ -1197,12 +1151,9 @@
       const overPct = p.sold > p.goal ? Math.round(((p.sold - p.goal) / p.goal) * 100) : 0;
       const isComplete = p.sold >= p.goal;
       const revenue = p.sold * p.price;
-      const imgHtml = p.image
-        ? `<div class="product-image"><img src="${p.image}" alt=""></div>`
-        : `<div class="product-image">▢</div>`;
-
+      const imgHtml = p.image ? `<div class="product-image"><img src="${p.image}" alt=""></div>` : `<div class="product-image">▢</div>`;
       return `
-        <div class="product ${isComplete ? 'completed' : ''}" data-id="${p.id}">
+        <div class="product ${isComplete?'completed':''}" data-id="${p.id}">
           <div class="product-top">
             ${imgHtml}
             <div class="product-info">
@@ -1212,36 +1163,23 @@
             <button class="product-menu" data-action="menu" data-id="${p.id}">⋮</button>
           </div>
           <div class="progress-section">
-            <div class="progress-bar-wrap">
-              <div class="progress-bar ${overPct > 0 ? 'over' : ''}" style="width: ${pct}%"></div>
-            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar ${overPct>0?'over':''}" style="width:${pct}%"></div></div>
             <div class="progress-meta">
-              <span><span class="count">${p.sold}</span> / ${p.goal} ขาย ${overPct > 0 ? `<span style="color:var(--success)">+${overPct}%</span>` : ''}</span>
+              <span><span class="count">${p.sold}</span> / ${p.goal} ขาย ${overPct>0?`<span style="color:var(--success)">+${overPct}%</span>`:''}</span>
               <span class="revenue">฿${formatNumber(revenue)}</span>
             </div>
           </div>
           <div class="product-actions">
-            <button class="btn-minus" data-action="minus" data-id="${p.id}" ${p.sold === 0 ? 'disabled' : ''}>−</button>
+            <button class="btn-minus" data-action="minus" data-id="${p.id}" ${p.sold===0?'disabled':''}>−</button>
             <button class="btn-plus" data-action="plus" data-id="${p.id}">+ 1 SALE</button>
           </div>
-        </div>
-      `;
-    }
-
-    function escapeHtml(s) {
-      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        </div>`;
     }
 
     function attachProductHandlers() {
-      document.querySelectorAll('[data-action="plus"]').forEach(b => {
-        b.onclick = () => addSale(b.dataset.id, 1);
-      });
-      document.querySelectorAll('[data-action="minus"]').forEach(b => {
-        b.onclick = () => addSale(b.dataset.id, -1);
-      });
-      document.querySelectorAll('[data-action="menu"]').forEach(b => {
-        b.onclick = () => openProductMenu(b.dataset.id);
-      });
+      document.querySelectorAll('[data-action="plus"]').forEach(b => b.onclick = () => addSale(b.dataset.id, 1));
+      document.querySelectorAll('[data-action="minus"]').forEach(b => b.onclick = () => addSale(b.dataset.id, -1));
+      document.querySelectorAll('[data-action="menu"]').forEach(b => b.onclick = () => openProductMenu(b.dataset.id));
     }
 
     // ============================================
@@ -1250,57 +1188,45 @@
     async function addSale(id, delta) {
       const p = state.products.find(x => x.id === id);
       if (!p) return;
+      const prev = p.sold;
       const newSold = Math.max(0, p.sold + delta);
+      const actual = newSold - prev;
       p.sold = newSold;
       render();
       if (delta > 0) {
         const card = document.querySelector(`.product[data-id="${id}"]`);
-        if (card) {
-          card.classList.add('pulse');
-          setTimeout(() => card.classList.remove('pulse'), 400);
-        }
+        if (card) { card.classList.add('pulse'); setTimeout(() => card.classList.remove('pulse'), 400); }
       }
+      if (actual !== 0) logSale(p, actual); // fire and forget
       await dbUpdateProduct(id, { sold: newSold });
     }
 
     function openProductModal(id = null) {
-      editingProductId = id;
-      pendingImage = null;
+      editingProductId = id; pendingImage = null;
       const upload = document.getElementById('imageUpload');
       upload.classList.remove('has-image');
-      const existingImg = upload.querySelector('img');
-      if (existingImg) existingImg.remove();
-      const overlay = upload.querySelector('.upload-overlay');
-      overlay.innerHTML = '<div class="form-image-icon">+</div><div class="form-image-text">Tap to upload</div>';
-
-      const title = document.getElementById('productModalTitle');
-      const nameInput = document.getElementById('productName');
-      const priceInput = document.getElementById('productPrice');
-      const goalInput = document.getElementById('productGoal');
-
+      const eImg = upload.querySelector('img'); if (eImg) eImg.remove();
+      upload.querySelector('.upload-overlay').innerHTML = '<div class="form-image-icon">+</div><div class="form-image-text">Tap to upload</div>';
       if (id) {
         const p = state.products.find(x => x.id === id);
-        title.textContent = 'แก้ไขสินค้า';
-        nameInput.value = p.name;
-        priceInput.value = p.price;
-        goalInput.value = p.goal;
+        document.getElementById('productModalTitle').textContent = 'แก้ไขสินค้า';
+        document.getElementById('productName').value = p.name;
+        document.getElementById('productPrice').value = p.price;
+        document.getElementById('productGoal').value = p.goal;
         if (p.image) { pendingImage = p.image; showUploadedImage(p.image); }
       } else {
-        title.textContent = 'เพิ่มสินค้าใหม่';
-        nameInput.value = ''; priceInput.value = ''; goalInput.value = '';
+        document.getElementById('productModalTitle').textContent = 'เพิ่มสินค้าใหม่';
+        ['productName','productPrice','productGoal'].forEach(id => document.getElementById(id).value = '');
       }
-
       document.getElementById('productModal').classList.remove('hidden');
-      setTimeout(() => nameInput.focus(), 100);
+      setTimeout(() => document.getElementById('productName').focus(), 100);
     }
 
-    function showUploadedImage(dataUrl) {
+    function showUploadedImage(url) {
       const upload = document.getElementById('imageUpload');
       upload.classList.add('has-image');
-      const existingImg = upload.querySelector('img');
-      if (existingImg) existingImg.remove();
-      const img = document.createElement('img');
-      img.src = dataUrl;
+      const eImg = upload.querySelector('img'); if (eImg) eImg.remove();
+      const img = document.createElement('img'); img.src = url;
       upload.insertBefore(img, upload.firstChild);
       upload.querySelector('.upload-overlay').innerHTML = '<div>เปลี่ยนรูป</div>';
     }
@@ -1309,15 +1235,11 @@
       const name = document.getElementById('productName').value.trim();
       const price = parseInt(document.getElementById('productPrice').value, 10);
       const goal = parseInt(document.getElementById('productGoal').value, 10);
-
       if (!name) { alert('กรอกชื่อสินค้าด้วย'); return; }
       if (!price || price < 0) { alert('กรอกราคาให้ถูกต้อง'); return; }
       if (!goal || goal < 1) { alert('กรอกเป้าหมายให้ถูกต้อง'); return; }
-
-      const saveBtn = document.getElementById('productSave');
-      saveBtn.disabled = true;
-      saveBtn.textContent = 'กำลังบันทึก...';
-
+      const btn = document.getElementById('productSave');
+      btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
       try {
         if (editingProductId) {
           const p = state.products.find(x => x.id === editingProductId);
@@ -1326,16 +1248,10 @@
         } else {
           const newProd = { name, price, goal, sold: 0, image: pendingImage };
           const newId = await dbInsertProduct(newProd);
-          if (newId) {
-            state.products.push({ id: newId, ...newProd });
-          }
+          if (newId) state.products.push({ id: newId, ...newProd });
         }
-        closeAllModals();
-        render();
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'บันทึก';
-      }
+        closeAllModals(); render();
+      } finally { btn.disabled = false; btn.textContent = 'บันทึก'; }
     }
 
     function openProductMenu(id) {
@@ -1347,15 +1263,13 @@
 
     async function setTheme(t) {
       state.theme = t;
+      destroyChart();
       render();
       await savePreferences();
     }
 
     async function resetMonth() {
-      const updates = state.products.map(p =>
-        sb.from('products').update({ sold: 0 }).eq('id', p.id)
-      );
-      await Promise.all(updates);
+      await Promise.all(state.products.map(p => sb.from('products').update({ sold: 0 }).eq('id', p.id)));
       state.products.forEach(p => p.sold = 0);
       state.month = getCurrentMonth();
       await savePreferences();
@@ -1368,124 +1282,140 @@
       render();
     }
 
-    function showConfirm(title, message, onOk) {
+    function openGoalsModal() {
+      document.getElementById('monthlyGoalInput').value = state.goals.monthly || '';
+      document.getElementById('yearlyGoalInput').value = state.goals.yearly || '';
+      document.getElementById('goalsModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('monthlyGoalInput').focus(), 100);
+    }
+
+    function openGoalCard() {
+      const monthlyRev = getMonthlyRevenue();
+      const yearlyRev = getYearlyRevenue();
+      const { monthly, yearly } = state.goals;
+      const mPct = monthly > 0 ? Math.min(100, Math.round((monthlyRev / monthly) * 100)) : 0;
+      const yPct = yearly > 0 ? Math.min(100, Math.round((yearlyRev / yearly) * 100)) : 0;
+      const n = new Date();
+      const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      document.getElementById('gcYearlyAmt').textContent = yearly > 0 ? '฿' + formatNumber(yearly) : '—';
+      document.getElementById('gcYearlyFill').style.width = yPct + '%';
+      document.getElementById('gcYearlyPct').textContent = yearly > 0 ? yPct + '% (' + formatNumber(yearlyRev) + ')' : 'ยังไม่ตั้งเป้า';
+      document.getElementById('gcMonthlyAmt').textContent = monthly > 0 ? '฿' + formatNumber(monthly) : '—';
+      document.getElementById('gcMonthlyFill').style.width = mPct + '%';
+      document.getElementById('gcMonthlyPct').textContent = monthly > 0 ? mPct + '% (฿' + formatNumber(monthlyRev) + ')' : 'ยังไม่ตั้งเป้า';
+      document.getElementById('gcMonth').textContent = `${months[n.getMonth()]} ${n.getFullYear()}`;
+      document.getElementById('gcDaysLeft').textContent = daysLeftInMonth() + ' DAYS LEFT';
+      document.getElementById('goalCardModal').classList.remove('hidden');
+    }
+
+    function showConfirm(title, msg, onOk) {
       document.getElementById('confirmTitle').textContent = title;
-      document.getElementById('confirmMessage').textContent = '// ' + message;
+      document.getElementById('confirmMessage').textContent = '// ' + msg;
       pendingConfirm = onOk;
       document.getElementById('confirmModal').classList.remove('hidden');
     }
 
     function closeAllModals() {
       document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.add('hidden'));
-      editingProductId = null;
-      menuProductId = null;
-      pendingConfirm = null;
+      editingProductId = null; menuProductId = null; pendingConfirm = null;
+    }
+
+    function compressImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            const MAX = 240; let w = img.width, h = img.height;
+            if (w > h) { if (w > MAX) { h = h*MAX/w; w = MAX; } } else { if (h > MAX) { w = w*MAX/h; h = MAX; } }
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(c.toDataURL('image/jpeg', 0.7));
+          };
+          img.onerror = reject; img.src = e.target.result;
+        };
+        reader.onerror = reject; reader.readAsDataURL(file);
+      });
     }
 
     // ============================================
     // EVENT LISTENERS
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
-
-      // ── Login ──
+      // Login
       document.getElementById('loginBtn').onclick = signIn;
-      document.getElementById('loginEmail').addEventListener('keypress', e => {
-        if (e.key === 'Enter') document.getElementById('loginPassword').focus();
-      });
-      document.getElementById('loginPassword').addEventListener('keypress', e => {
-        if (e.key === 'Enter') signIn();
-      });
+      document.getElementById('loginEmail').addEventListener('keypress', e => { if (e.key==='Enter') document.getElementById('loginPassword').focus(); });
+      document.getElementById('loginPassword').addEventListener('keypress', e => { if (e.key==='Enter') signIn(); });
       document.getElementById('toggleLoginPw').onclick = () => togglePw('loginPassword');
-
-      // ── Sign Up ──
-      document.getElementById('switchToSignup').onclick = (e) => {
-        e.preventDefault();
-        showLoginView('signupFormView');
-      };
-      document.getElementById('switchToLogin').onclick = (e) => {
-        e.preventDefault();
-        showLoginView('loginFormView');
-      };
+      document.getElementById('switchToSignup').onclick = e => { e.preventDefault(); showLoginView('signupFormView'); };
+      document.getElementById('switchToLogin').onclick = e => { e.preventDefault(); showLoginView('loginFormView'); };
       document.getElementById('signupBtn').onclick = signUp;
-      document.getElementById('toggleSignupPw').onclick  = () => togglePw('signupPassword');
+      document.getElementById('toggleSignupPw').onclick = () => togglePw('signupPassword');
       document.getElementById('toggleConfirmPw').onclick = () => togglePw('signupConfirm');
-      document.getElementById('signupConfirm').addEventListener('keypress', e => {
-        if (e.key === 'Enter') signUp();
-      });
-      document.getElementById('backToLoginFromSignup').onclick = (e) => {
-        e.preventDefault();
-        showLoginView('loginFormView');
-      };
-
-      // ── Forgot Password ──
-      document.getElementById('forgotLink').onclick = (e) => {
-        e.preventDefault();
-        document.getElementById('forgotEmail').value =
-          document.getElementById('loginEmail').value;
-        showLoginView('forgotFormView');
-      };
-      document.getElementById('backToLogin').onclick = (e) => {
-        e.preventDefault();
-        showLoginView('loginFormView');
-      };
-      document.getElementById('backToLoginFromForgot').onclick = (e) => {
-        e.preventDefault();
-        showLoginView('loginFormView');
-      };
+      document.getElementById('signupConfirm').addEventListener('keypress', e => { if (e.key==='Enter') signUp(); });
+      document.getElementById('backToLoginFromSignup').onclick = e => { e.preventDefault(); showLoginView('loginFormView'); };
+      document.getElementById('forgotLink').onclick = e => { e.preventDefault(); document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value; showLoginView('forgotFormView'); };
+      document.getElementById('backToLogin').onclick = e => { e.preventDefault(); showLoginView('loginFormView'); };
+      document.getElementById('backToLoginFromForgot').onclick = e => { e.preventDefault(); showLoginView('loginFormView'); };
       document.getElementById('forgotBtn').onclick = sendResetEmail;
-      document.getElementById('forgotEmail').addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendResetEmail();
-      });
+      document.getElementById('forgotEmail').addEventListener('keypress', e => { if (e.key==='Enter') sendResetEmail(); });
 
-      // ── App ──
+      // Quote
+      document.getElementById('quoteClose').onclick = () => document.getElementById('quoteToast').classList.add('hidden');
+
+      // Period tabs
+      document.querySelectorAll('.period-tab').forEach(t => t.onclick = () => switchPeriod(t.dataset.period));
+
+      // Swipe chart to change period
+      const chartArea = document.getElementById('chartArea');
+      chartArea.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      chartArea.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 50) {
+          const periods = ['day','week','month','year'];
+          const idx = periods.indexOf(state.period);
+          if (dx < 0 && idx < periods.length-1) switchPeriod(periods[idx+1]);
+          else if (dx > 0 && idx > 0) switchPeriod(periods[idx-1]);
+        }
+      }, { passive: true });
+
+      // App actions
       document.getElementById('addBtn').onclick = () => openProductModal();
-      document.getElementById('settingsBtn').onclick = () => {
-        document.getElementById('settingsModal').classList.remove('hidden');
-      };
+      document.getElementById('shareBtn').onclick = openGoalCard;
+      document.getElementById('settingsBtn').onclick = () => document.getElementById('settingsModal').classList.remove('hidden');
+      document.getElementById('editGoalsBtn').onclick = openGoalsModal;
+      document.getElementById('goalsSetupBtn').onclick = openGoalsModal;
+      document.getElementById('gcClose').onclick = closeAllModals;
 
+      // Product modal
       document.getElementById('productCancel').onclick = closeAllModals;
       document.getElementById('productSave').onclick = saveProduct;
-
-      document.getElementById('imageInput').onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        try {
-          const compressed = await compressImage(file);
-          pendingImage = compressed;
-          showUploadedImage(compressed);
-        } catch { alert('โหลดรูปไม่สำเร็จ'); }
+      document.getElementById('imageInput').onchange = async e => {
+        const file = e.target.files[0]; if (!file) return;
+        try { const c = await compressImage(file); pendingImage = c; showUploadedImage(c); } catch { alert('โหลดรูปไม่สำเร็จ'); }
       };
 
-      document.getElementById('settingsClose').onclick = closeAllModals;
-      document.querySelectorAll('.theme-card').forEach(c => {
-        c.onclick = () => setTheme(c.dataset.t);
-      });
-      document.getElementById('resetMonthBtn').onclick = () => {
-        showConfirm('รีเซ็ตเดือนใหม่?', 'ยอดขายทุกสินค้าจะกลับเป็น 0', async () => {
-          await resetMonth();
-          closeAllModals();
-        });
-      };
-      document.getElementById('logoutBtn').onclick = () => {
-        showConfirm('ออกจากระบบ?', 'ต้อง login ใหม่ครั้งหน้า', async () => {
-          await logout();
-          closeAllModals();
-        });
-      };
-
-      document.getElementById('menuClose').onclick = closeAllModals;
-      document.getElementById('menuEdit').onclick = () => {
-        const id = menuProductId;
+      // Goals modal
+      document.getElementById('goalsCancel').onclick = closeAllModals;
+      document.getElementById('goalsSaveBtn').onclick = async () => {
+        const m = parseFloat(document.getElementById('monthlyGoalInput').value) || 0;
+        const y = parseFloat(document.getElementById('yearlyGoalInput').value) || 0;
+        await saveGoals(m, y);
         closeAllModals();
-        openProductModal(id);
       };
+
+      // Settings modal
+      document.getElementById('settingsClose').onclick = closeAllModals;
+      document.querySelectorAll('.theme-card').forEach(c => c.onclick = () => setTheme(c.dataset.t));
+      document.getElementById('resetMonthBtn').onclick = () => showConfirm('รีเซ็ตเดือนใหม่?', 'ยอดขายทุกสินค้าจะกลับเป็น 0', async () => { await resetMonth(); closeAllModals(); });
+      document.getElementById('logoutBtn').onclick = () => showConfirm('ออกจากระบบ?', 'ต้อง login ใหม่ครั้งหน้า', async () => { await logout(); closeAllModals(); });
+
+      // Product menu modal
+      document.getElementById('menuClose').onclick = closeAllModals;
+      document.getElementById('menuEdit').onclick = () => { const id = menuProductId; closeAllModals(); openProductModal(id); };
       document.getElementById('menuDelete').onclick = () => {
-        const p = state.products.find(x => x.id === menuProductId);
-        const id = menuProductId;
-        showConfirm('ลบสินค้า?', `${p.name} จะถูกลบถาวร`, async () => {
-          await deleteProduct(id);
-          closeAllModals();
-        });
+        const p = state.products.find(x => x.id === menuProductId), id = menuProductId;
+        showConfirm('ลบสินค้า?', `${p.name} จะถูกลบถาวร`, async () => { await deleteProduct(id); closeAllModals(); });
       };
       document.getElementById('menuAddBulk').onclick = () => {
         document.getElementById('menuModal').classList.add('hidden');
@@ -1494,24 +1424,18 @@
         setTimeout(() => document.getElementById('bulkAmount').focus(), 100);
       };
 
+      // Bulk / confirm modals
       document.getElementById('bulkCancel').onclick = closeAllModals;
       document.getElementById('bulkConfirm').onclick = async () => {
         const n = parseInt(document.getElementById('bulkAmount').value, 10);
         if (!n || n < 1) { alert('กรอกจำนวนให้ถูกต้อง'); return; }
-        await addSale(menuProductId, n);
-        closeAllModals();
+        await addSale(menuProductId, n); closeAllModals();
       };
-
       document.getElementById('confirmCancel').onclick = closeAllModals;
-      document.getElementById('confirmOk').onclick = async () => {
-        if (pendingConfirm) await pendingConfirm();
-      };
+      document.getElementById('confirmOk').onclick = async () => { if (pendingConfirm) await pendingConfirm(); };
 
-      document.querySelectorAll('.modal-backdrop').forEach(m => {
-        m.addEventListener('click', e => {
-          if (e.target === m) closeAllModals();
-        });
-      });
+      // Click backdrop to close
+      document.querySelectorAll('.modal-backdrop').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeAllModals(); }));
 
       // Start
       init();
